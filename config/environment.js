@@ -2,7 +2,7 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'webuie',
+    modulePrefix: 'webui',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
