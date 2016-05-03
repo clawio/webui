@@ -1,0 +1,29 @@
+<div class="ui menu">
+  {{#link-to "admin" class="item"}}
+	<img src="assets/images/logo-blue.svg" />
+  {{/link-to}}
+  <div class="left menu">
+	<a class="ui pointing dropdown item application-dropdown"><i class="blue block layout icon"></i>Applications
+	<i class="dropdown icon"></i>
+	  <div class="menu ui transition hidden">
+	    <div class="item">Action</div>
+	    <div class="item">Another action</div>
+	    <div class="item">Something else here</div>
+	    <div class="ui horizontal divider"></div>
+	    <div class="item">Seperated link</div>
+	    <div class="item">One more seperated link</div>
+	    <div class="item"><span class="red">Log out</span></div>
+	  </div>
+	</a>
+  </div>
+  <div class="right menu">
+	<a class="ui pointing dropdown item identity">Hugo Gonzalez Labrador (<b>@labkode</b>)>
+	<i class="dropdown icon"></i>
+	  <div class="menu ui transition hidden">
+	  {{#link-to "admin.profile" class="item"}}<i class="blue user icon"></i>My profile{{/link-to}}
+	  <a class="item red text" {{ action 'logout' }}><i class="red lock icon"></i>Logout</a>
+	  </div>
+	</a>
+  </div>
+</div>
+{{yield}}

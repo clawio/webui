@@ -43,5 +43,10 @@ module.exports = function(environment) {
 
   }
 
+  ENV['ember-simple-auth'] = {
+      routeAfterAuthentication: 'admin',
+      routeIfAlreadyAuthenticated: 'admin'
+  };
+  
   return ENV;
 };

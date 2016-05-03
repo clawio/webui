@@ -1,0 +1,43 @@
+ <div class="ui hidden divider"></div>
+ <div class="ui hidden divider"></div>
+ <div class="ui page grid center aligned">
+
+	<div class="ui row">
+                <div class="column">
+ 			<div class="ui page grid center aligned">
+				<img class="ui small rounded image" src="assets/images/logo-blue.svg" />
+			</div>
+                        <p class="ui huge header">ClawIO: Cloud Synchronisation Benchmarking Framework</p>
+                        {{#link-to 'login' class="ui huge green button"}}Access the service{{/link-to}}
+                </div>
+        </div>
+
+        <div class="ui hidden divider"></div>
+            <div class="two column row">
+                <div class="column">
+                    <h2 class="ui medium header">Composable</h2>
+                    <p>ClawIO follows the micro service design and every component is encapsulated into a single logical unit. Every component is described in a Dockerfile and follows the 12 Factor App principles for coniguration</p>
+                </div>
+                <div class="column">
+                    <h2 class="ui medium header">Universal</h2>
+                    <p>ClawIO is built on top of two universal technologies: HTTP and gRPC. HTTP is used for binary data handling and gRPC for inter component communication through Protocol Buffers.</p>
+                </div>
+            </div>
+            <div class="two column row">
+                <div class="column">
+                    <h2 class="ui medium header">Language Agnostic</h2>
+                    <p>Are you a Gopher? Do you like PHP ? Node ? Rust? Haskell? Perl? You can extend the logical components of ClawIO as long as your language has libraries for creating HTTP and gRPC connections.</p>
+                </div>
+                <div class="column">
+                    <h2 class="ui medium header">Powerful Design</h2>
+                    <p>ClawIO has been designed with scalability in mind. Its design is based on EOS and CERNBox, the components that power the synchronisation and sharing of the LHC data.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="ui divider"></div>  
+                    <span>&copy; ClawIO 2016</span>
+                </div>
+            </div>
+        </div>
+{{outlet}}

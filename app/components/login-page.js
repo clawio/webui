@@ -1,26 +1,25 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-	username: "",
-	password: "",
-	error: "",
-	loading: false,
-	onUserDidLogin: null,
+	session: Ember.inject.service('session'),
 
 	actions: {
 		login: function() { 
 			this.$(".dimmer").addClass("active");
-			const loginPromise = this.authentication.login(this.get('username'), this.get('password'));
-			let self = this;
-			loginPromise.then(function(token) {
-				self.get('onUserDidLogin')();
-			}, function(error) {
-				console.log(self.$("form"));
-				self.$("form").addClass("error");
-				self.$("form").form("add errors", [error]);
-			}).finally(function() {
-				self.$(".dimmer").removeClass("active");	
-			});
+			let { username, password } = this.getProperties('username', 'password');
+			let self = this;	
+			
+			this.get('session').authenticate('authenticator:oauth2', username, password)
+				.catch((reason) => {
+					let error = "Bad username or password";
+					this.set('error', error);
+					this.$("form").addClass("error");
+					this.$("form").form("add errors", [error]);
+				})
+				.finally(() => {
+					this.$(".dimmer").removeClass("active");	
+					self.get('onUserDidAuthenticated')();
+				});
 		} 
 	},
 
