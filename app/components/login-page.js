@@ -6,11 +6,11 @@ export default Ember.Component.extend({
 	actions: {
 		login: function() { 
 			this.$(".dimmer").addClass("active");
-			let { username, password } = this.getProperties('username', 'password');
+			let credentials = this.getProperties('identification', 'password');
 			let self = this;	
 			
-			this.get('session').authenticate('authenticator:oauth2', username, password)
-				.catch((reason) => {
+			this.get('session').authenticate('authenticator:token', credentials)
+				.catch(() => {
 					let error = "Bad username or password";
 					this.set('error', error);
 					this.$("form").addClass("error");

@@ -1,9 +1,16 @@
 <div class="ui one column stackable center aligned page grid">
-   <div class="column six wide">
-	<div class="ui attached message">
-	  <div class="header">Log in</div>
-	  <p>Fill out the form below to log in</p>
-	  <img src="assets/images/logo-blue.svg" style="width:25%; height:25%"/>
+   <div class="column eight wide">
+	<div class="ui attached negative message">
+	  <div class="header">
+		  <i class="huge lock icon"></i>
+		  <p>Restricted Area
+		  </p>
+	  </div>
+		  <p>
+		     <br/>Authorized Personnel Only
+		     <br/>Any access to this area will be logged and processed
+		     <br/>Legal action will be taken against any unlawful activity
+		  </p>
 	</div>
 	<form {{action "login" on="submit"}} class="ui form attached fluid segment">
 		<div class="ui inverted dimmer" >
@@ -11,7 +18,7 @@
 		</div>
 		<div class="field">
 			<label>Username</label>
-			{{input name="username" type="text" value=username autofocus=true}}
+			{{input name="username" type="text" value=identification autofocus=true}}
 		</div>
 		<div class="field">
 			<label>Password</label>
@@ -20,6 +27,5 @@
 		<button type="submit" class="ui green button">Log in</button>
 		<div class="ui error message"></div>
 	</form>
-	{{yield}}
-   </div>
+     </div>
 </div>

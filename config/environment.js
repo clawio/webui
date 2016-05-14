@@ -23,7 +23,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
-    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
+     ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
   }
 
@@ -39,14 +39,36 @@ module.exports = function(environment) {
     ENV.APP.rootElement = '#ember-testing';
   }
 
-  if (environment === 'production') {
 
+  if (environment === 'production') {
+	  ENV['apis'] = {
+		authBaseUrl: "/api/authentication/",
+		metaDataBaseUrl: "/api/metadata/",
+		dataBaseUrl: "/api/data/",
+	  };
+  } else {
+	  ENV['apis'] = {
+		authBaseUrl: "http://localhost:58001/api/authentication/",
+		metaDataBaseUrl: "http://localhost:58003/api/metadata/",
+		dataBaseUrl: "http://localhost:58002/api/data/",
+	  };
   }
 
   ENV['ember-simple-auth'] = {
+      authorizer: 'authorizer:token',
       routeAfterAuthentication: 'admin',
       routeIfAlreadyAuthenticated: 'admin'
   };
-  
+  ENV['ember-simple-auth-token'] = {
+	  serverTokenEndpoint: ENV['apis'].authBaseUrl+'token',
+	  identificationField: 'username',
+	  passwordField: 'password',
+	  tokenPropertyName: 'access_token',
+	  authorizationPrefix: 'Bearer',
+	  authorizationHeaderName: 'Authorization',
+	  headers: {},
+  };
+
+
   return ENV;
 };
