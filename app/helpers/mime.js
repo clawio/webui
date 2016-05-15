@@ -11,22 +11,22 @@ export function mime(params) {
   		return 'cube';
 	}
 	if (mime === 'application/pdf') {
-		return 'black file pdf outline';
+		return 'blue file pdf outline';
 	}
 	if (mime === 'application/javascript') {
-		return 'black code outline';
+		return 'blue code outline';
 	}
 	if (mime === 'application/xml') {
-		return 'black file code outline';
+		return 'blue file code outline';
 	}
 	if (mime.indexOf('image') > -1) {
-		return 'black camera retro';
+		return 'blue camera retro';
 	}
 	if (mime.indexOf('html') > -1) {
-		return 'black html5';
+		return 'blue html5';
 	}
 	if (mime.indexOf('css') > -1) {
-		return 'black css3';
+		return 'blue css3';
 	}
 
 	// TODO(labkode) fallback to extension

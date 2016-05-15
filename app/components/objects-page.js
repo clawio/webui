@@ -1,9 +1,17 @@
 import Ember from 'ember';
 
+
 export default Ember.Component.extend({
+	init () {
+		this._super(...arguments);
+		this.set('_originalObjects', this.get('objects'));
+	},
+
 	actions: {
+		examine(pathspec) {
+			this.sendAction('examine', pathspec);		
+		},
 		list(pathspec) {
-			console.log('objects-page:', pathspec);
 			this.sendAction('list', pathspec);
 		},
 
@@ -32,9 +40,9 @@ export default Ember.Component.extend({
 			}
 		}
 	},
-
-	init () {
-		this._super(...arguments);
-		this.set('_originalObjects', this.get('objects'));
+	didInsertElement() {
+	    Ember.run.scheduleOnce('afterRender', this, function() {
+		this.$(".object-dropdown").dropdown();
+            });
 	}
 });

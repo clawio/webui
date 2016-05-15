@@ -2,9 +2,10 @@
 <div class="ui hidden divider"></div>
 <div class="ui container">
 
+
 <div class="ui grid">
-  <div class="two column row">
-    <div class="left floated column">
+  <div class="four column row">
+    <div class="left floated ten wide column">
     {{objects-breadcrumbs breadcrumbs=breadcrumbs list="list"}}
     </div>
     <div class="right floated column right aligned">
@@ -16,7 +17,8 @@
   </div>
 </div>
 
-<table class="ui blue fixed table selectable very compact">
+{{#if objects}}
+<table class="ui blue table fixed selectable very compact">
   <thead>
     <tr>
       <th class="left aligned one wide"></th>
@@ -28,10 +30,16 @@
   <tbody>
 	{{#each objects as |object|}}
 	    <tr class="{{if object.ui_deleting "disabled error"}}">
-	      <td class="left aligned collapsing">
-			<a {{action "default" object.type object.pathspec}} href="">
-				<i class="ui large {{mime object.type object.mime_type}} icon"></i>
-			</a>
+	      <td class="left aligned collapsing" style="overflow:visible;">
+		<a {{action "default" object.type object.pathspec}} href="">
+			<i class="ui large {{mime object.type object.mime_type}} icon"></i>
+		</a>
+		<div class="ui icon top left pointing dropdown object-dropdown">
+		  <i class="blue ellipsis vertical icon"></i>
+		  <div class="ui inverted menu">
+		    <div {{action "examine" object.pathspec}} class="item"><i class="ui blue eye icon"></i>Examine</div>
+		  </div>
+		</div>
 	      </td>
 	      <td {{action "default" object.type object.pathspec}} class="collapsing left aligned"><a href="">{{basename object.pathspec}}</a></td>
 	      <td class="right aligned collapsing">{{human-size object.type object.size 1024}}</td>
@@ -46,5 +54,17 @@
 	{{/each}}
   </tbody>
 </table>
+{{else}}
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui page grid center aligned">
+<div class="ui info message">There are no objects to show</div>
+</div>
+{{/if}}
 </div>
 {{yield}}

@@ -12,6 +12,10 @@ export default Ember.Route.extend({
 	},
 
 	actions: {
+		examine(pathspec) {
+		        pathspec = pathspec.replace(/^\/|\/$/g, '');
+			this.transitionTo('admin.objects-examine', pathspec);	
+		},
 		list(pathspec) {
 		        pathspec = pathspec.replace(/^\/|\/$/g, '');
 			this.transitionTo('admin.objects-list-nohome', pathspec);
@@ -19,18 +23,15 @@ export default Ember.Route.extend({
 
 		delete(pathspec) {
 			let object = this.modelFor(this.routeName).objects.findBy("pathspec", pathspec);
-			object.set('ui_deleting', true);
-			console.log(this.modelFor(this.routeName).objects);
-			return;
+			Ember.set(object, 'ui_deleting', true);
+
 			let deleting = this.get('metaData').delete(pathspec);
 			deleting
 			.then(() => {
 				this.modelFor(this.routeName).objects.removeObject(object);
-				console.log("deletion ok!");
 			})
 			.catch((res) => {
-				object.ui_deleting = false;
-				console.log(res, "cannot delete");
+				Ember.set(object, 'ui_deleting', false);
 			})
 		},
 
