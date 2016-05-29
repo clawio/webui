@@ -8,6 +8,9 @@ export default Ember.Component.extend({
 	},
 
 	actions: {
+		didSelectFiles(files) {
+			this.sendAction('upload', files);	
+		},
 		examine(pathspec) {
 			this.sendAction('examine', pathspec);		
 		},
@@ -38,11 +41,13 @@ export default Ember.Component.extend({
 				});
 				this.set('objects', filtered);
 			}
-		}
+		},
+		
+
 	},
 	didInsertElement() {
 	    Ember.run.scheduleOnce('afterRender', this, function() {
-		this.$(".object-dropdown").dropdown();
+		this.$(".dropdown").dropdown();
             });
 	}
 });

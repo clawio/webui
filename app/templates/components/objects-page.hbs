@@ -2,6 +2,14 @@
 <div class="ui hidden divider"></div>
 <div class="ui container">
 
+<button {{action "_testSetBar" 20}}>Set total for bar</button>
+<button {{action "_testChangeBar"}}>Change bar</button>
+<div class="ui grid">
+  <div class="four column row">
+    <div class="left floated ten wide column">
+    </div>
+  </div>
+</div>
 
 <div class="ui grid">
   <div class="four column row">
@@ -9,7 +17,7 @@
     {{objects-breadcrumbs breadcrumbs=breadcrumbs list="list"}}
     </div>
     <div class="right floated column right aligned">
-      <div class="ui icon input">
+      <div class="ui icon small input">
         {{input key-up="filter" type="text" placeholder="Filter..." value=filterterm}}
         <i class="search icon"></i>
       </div>
@@ -17,11 +25,26 @@
   </div>
 </div>
 
-{{#if objects}}
+{{progress-bar total=uploadTotal value=uploadValue}}
+
 <table class="ui blue table fixed selectable very compact">
   <thead>
     <tr>
-      <th class="left aligned one wide"></th>
+      <th class="left aligned one wide" style="overflow:visible;">
+	<div class="ui icon left pointing dropdown button basic">
+	  <i class="plus blue icon"></i>
+	  <div class="ui menu">
+	    <div class="item">
+		{{#x-file-input name="files" action="didSelectFiles" alt="Choose a file" multiple=true}}
+		<i class="ui upload blue icon"></i>Upload file
+		{{/x-file-input}}
+	    </div>
+	    <div class="item"><i class="ui blue cube icon"></i>New file</div>
+	    <div class="item"><i class="ui yellow folder open icon"></i>New folder</div>
+	  </div>
+	</div>
+
+      </th>
       <th class="left aligned sorted ascending twelve wide">Name</th>
       <th class="right aligned two wide">Size</th>
       <th class="rigth aligned one wide"></th>
@@ -45,26 +68,14 @@
 	      <td class="right aligned collapsing">{{human-size object.type object.size 1024}}</td>
 	      <td class="right aligned collapsing">
 	      {{#if object.ui_deleting}}
-		<i class="ui red icon circle notched loading"></i>
+		<i class="ui red icon circle notched loading small"></i>
 	      {{else}}
-		<a {{action "delete" object.pathspec}} href=""><i class="ui red icon trash"></i></a>
+		<a {{action "delete" object.pathspec}} href=""><i class="ui red icon large trash"></i></a>
 	      {{/if}}
 	      </td>
 	    </tr>
 	{{/each}}
   </tbody>
 </table>
-{{else}}
-<div class="ui hidden divider"></div>
-<div class="ui hidden divider"></div>
-<div class="ui hidden divider"></div>
-<div class="ui hidden divider"></div>
-<div class="ui hidden divider"></div>
-<div class="ui hidden divider"></div>
-<div class="ui hidden divider"></div>
-<div class="ui page grid center aligned">
-<div class="ui info message">There are no objects to show</div>
-</div>
-{{/if}}
 </div>
 {{yield}}

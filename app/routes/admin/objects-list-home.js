@@ -6,12 +6,82 @@ export default Ember.Route.extend({
 
 	model(params) {
 		return Ember.RSVP.hash({
+			currentPathspec: params.pathspec || "",
 			objects: this.get('metaData').list(params.pathspec),
 			breadcrumbs: this.get('pathspecToBreadcrumbs')(params.pathspec),
+			uploadTotal: 0,
+			uploadValue: 0,
 		});
+		Ember.run.later(() => {
+				
+			Ember.set(this.modelFor(this.routeName), 'uploadTotal', 10);
+			Ember.set(this.modelFor(this.routeName), 'uploadValue', 5);
+		}, 2000);
 	},
 
+	initUploadBar(total) {
+		Ember.set(this.modelFor(this.routeName), 'uploadTotal', total);
+		Ember.set(this.modelFor(this.routeName), 'uploadValue', 0);
+	},
+	incrementUploadBar() {
+		let total = Ember.get(this.modelFor(this.routeName), 'uploadTotal');
+		let current = Ember.get(this.modelFor(this.routeName), 'uploadValue');
+		Ember.set(this.modelFor(this.routeName), 'uploadValue', current + 1);
+
+		if (current + 1 >= total) {
+			Ember.set(this.modelFor(this.routeName), 'uploadTotal', 0);
+			Ember.set(this.modelFor(this.routeName), 'uploadValue', 0);
+		}
+	},
+	progressHandler(e) {
+		if(e.lengthComputable){
+			console.log(e.loaded+"/"+e.total);
+			//$('progress').attr({value:e.loaded,max:e.total});
+		}
+	},
+	getTotalSize(files) {
+		let sum = 0;
+		for(let i = 0; i < files.length; i++) {
+			sum += files.item(i).size;
+		}
+		return sum;
+	},
+	getUploadPromise(file) {
+		let basename = file.name;
+		let data = file;
+		let pathspec = this.modelFor(this.routeName).currentPathspec;
+		pathspec = pathspec.replace(/^\/|\/$/g, '');
+		pathspec = pathspec + "/" + basename;
+		pathspec = pathspec.replace(/^\/|\/$/g, '');
+		return this.get('data').upload(pathspec, data, this.progressHandler);
+	},
 	actions: {
+
+		upload(files) {
+			let numberOfFiles = files.length;
+			let totalSize = this.getTotalSize(files);
+			let uploadQueue = [];
+
+			// showUploadBar()
+			for(let i = 0; i < files.length; i++) {
+				let uploadPromise = this.getUploadPromise(files.item(i));
+				uploadQueue.push(uploadPromise);
+				uploadPromise
+				.then(() => {
+					// addObjectToModel();
+					console.log("upload ok!");
+				})
+				.catch(() => {
+					// showError();
+					console.error("upload failed");
+				})
+				.finally(() => {
+				})
+			}
+			Ember.RSVP.allSettled(uploadQueue).then((results) => {
+				console.log(results);
+			});
+		},
 		examine(pathspec) {
 		        pathspec = pathspec.replace(/^\/|\/$/g, '');
 			this.transitionTo('admin.objects-examine', pathspec);	

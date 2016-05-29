@@ -20,4 +20,40 @@ export default Ember.Service.extend({
 		return ENV.apis.dataBaseUrl+"download/"+pathspec+"?"+query;
 	},
 
+	upload(pathspec, data, progressHandler) {
+		let self = this;
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+			Ember.run.later(() => {
+				self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
+					  const headers = {};
+					  headers[headerName] = headerValue;
+					Ember.$.ajax({
+					    xhr: function() {  // Custom XMLHttpRequest
+						    var myXhr = $.ajaxSettings.xhr();
+						    if(myXhr.upload){ // Check if upload property exists
+							myXhr.upload.addEventListener('progress',progressHandler, false); // For handling the progress of the upload
+						    }
+						    return myXhr;
+					    },
+					    contentType: "application/octet-stream",
+					    data: data,
+					    processData: false,
+					    headers,
+					    url: ENV.apis.dataBaseUrl+"upload/"+pathspec,
+					    type: "PUT",
+					}).done(function(response) {
+						resolve();
+					}).fail((resp) => {
+						let error = internalError;
+						if (resp.status === 400) {
+							error = resp.responseJSON.message;
+						} 
+						reject(error);
+					});
+				});
+			
+			}, 2000);
+               });
+	}
+
 });
