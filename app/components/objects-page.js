@@ -19,7 +19,7 @@ export default Ember.Component.extend({
 		},
 
 		default(type, pathspec) {
-			if (type === 0 ) {
+			if (type === 'tree' ) {
 				this.sendAction('list', pathspec);
 			} else {
 				this.sendAction('download', pathspec);

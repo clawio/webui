@@ -4,7 +4,7 @@ export function mime(params) {
   const type = params[0];
   const mime = params[1];
 
-  if (type === 0) {
+  if (type === 'tree') {
   	return 'yellow folder open';
   } else {
 	if (!mime) {

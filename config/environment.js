@@ -42,15 +42,15 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
 	  ENV['apis'] = {
-		authBaseUrl: "/api/authentication/",
-		metaDataBaseUrl: "/api/metadata/",
-		dataBaseUrl: "/api/data/",
+		authBaseUrl: "/api/v1/authentication/",
+		metaDataBaseUrl: "/api/v1/metadata/",
+		dataBaseUrl: "/api/v1/data/",
 	  };
   } else {
 	  ENV['apis'] = {
-		authBaseUrl: "http://localhost:58001/api/authentication/",
-		metaDataBaseUrl: "http://localhost:58003/api/metadata/",
-		dataBaseUrl: "http://localhost:58002/api/data/",
+		authBaseUrl: "http://localhost:1502/api/v1/authentication/",
+		metaDataBaseUrl: "http://localhost:1502/api/v1/metadata/",
+		dataBaseUrl: "http://localhost:1502/api/v1/data/",
 	  };
   }
 
