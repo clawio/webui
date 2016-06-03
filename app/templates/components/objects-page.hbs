@@ -2,14 +2,16 @@
 <div class="ui hidden divider"></div>
 <div class="ui container">
 
-<button {{action "_testSetBar" 20}}>Set total for bar</button>
-<button {{action "_testChangeBar"}}>Change bar</button>
 <div class="ui grid">
   <div class="four column row">
     <div class="left floated ten wide column">
     </div>
   </div>
 </div>
+
+{{#if uploadTotal}}
+{{progress-bar total=uploadTotal value=uploadValue filename=uploadFilename sizeRatio=uploadFilesizeRatio}}
+{{/if}}
 
 <div class="ui grid">
   <div class="four column row">
@@ -17,15 +19,42 @@
     {{objects-breadcrumbs breadcrumbs=breadcrumbs list="list"}}
     </div>
     <div class="right floated column right aligned">
-      <div class="ui icon small input">
-        {{input key-up="filter" type="text" placeholder="Filter..." value=filterterm}}
+      <div class="ui action left icon tiny input">
         <i class="search icon"></i>
+        {{input key-up="filter"  type="text" placeholder="Filter..." value=filterterm}}
+  <div {{action "clearFilter"}} class="ui basic tiny button">Clear</div>
       </div>
     </div>
   </div>
 </div>
 
-{{progress-bar total=uploadTotal value=uploadValue}}
+{{#if isObjectBeingCreated }}
+<div class="ui left icon input disabled loading">
+  <input type="text" value="Creating object" />
+  <i class="ui blue cube icon"></i>
+</div>
+{{/if}}
+
+{{#if creatingObject }}
+<div class="ui left icon input new-object-input">
+  {{input type="text" placeholder="New object" focus-out="hideCreatingObject" value=newObjectName key-up="processNewObject"}}
+  <i class="ui blue cube icon"></i>
+</div>
+{{/if}}
+
+{{#if isTreeBeingCreated }}
+<div class="ui left icon input disabled loading">
+  <input type="text" value="Creating tree" />
+  <i class="ui blue cube icon"></i>
+</div>
+{{/if}}
+
+{{#if creatingTree }}
+<div class="ui left icon input new-tree-input">
+  {{input type="text" placeholder="New tree" focus-out="hideCreatingTree" value=newTreeName key-up="processNewTree"}}
+  <i class="ui yellow open folder icon"></i>
+</div>
+{{/if}}
 
 <table class="ui blue table fixed selectable very compact">
   <thead>
@@ -34,43 +63,79 @@
 	<div class="ui icon left pointing dropdown button basic">
 	  <i class="plus blue icon"></i>
 	  <div class="ui menu">
-	    <div class="item">
+	    <div class="item {{if uploadTotal 'disabled'}}">
 		{{#x-file-input name="files" action="didSelectFiles" alt="Choose a file" multiple=true}}
-		<i class="ui upload blue icon"></i>Upload file
+		<b><i class="ui upload blue icon"></i>Upload objects</b>
 		{{/x-file-input}}
 	    </div>
-	    <div class="item"><i class="ui blue cube icon"></i>New file</div>
-	    <div class="item"><i class="ui yellow folder open icon"></i>New folder</div>
+	    <div {{action "showCreatingObject"}} class="item {{if creatingObject 'disabled'}} {{if isObjectBeingCreated 'disabled'}}">
+		<div><b><i class="ui blue cube icon new-object-button"></i>New object</b></div>
+	    </div>
+	    <div {{action "showCreatingTree"}} class="item {{if creatingTree 'disabled'}} {{if isTreeBeingCreated 'disabled'}}">
+		<div><b><i class="ui yellow folder open icon new-tree-button"></i>New tree</b></div>
+	    </div>
+	    <div {{action "toggleBatchMode"}} class="item">
+		<div><b><i class="ui green unoderered list icon"></i> Toggle batch mode</b></div>
+	    </div>
 	  </div>
 	</div>
-
       </th>
-      <th class="left aligned sorted ascending twelve wide">Name</th>
+      <th class="left aligned one wide"></th>
+      <th class="left aligned sorted ascending eleven wide">Name</th>
       <th class="right aligned two wide">Size</th>
       <th class="rigth aligned one wide"></th>
     </tr>
+    {{#if batchMode}}
+    <tr>
+      <th class="left aligned one wide">
+	  {{input type="checkbox" checked=selectedAll}}
+      </th>
+      <th class="left aligned one wide"></th>
+      <th class="left aligned sorted ascending eleven wide">
+	{{#if selectedObjects}}
+		<label class="ui label">{{selectedObjects}} objects selected</label>
+	<button {{action "deleteSelected"}} class="ui compact circular labeled icon red tiny button right aligned">
+	  <i class="trash icon"></i>
+	  Delete selected
+	</button>
+      {{/if}}
+      </th>
+      <th class="right aligned two wide"></th>
+      <th class="rigth aligned one wide">
+      </th>
+    </tr>
+    {{/if}}
   </thead>
   <tbody>
-	{{#each objects as |object|}}
-	    <tr class="{{if object.ui_deleting "disabled error"}}">
-	      <td class="left aligned collapsing" style="overflow:visible;">
-		<a {{action "default" object.type object.pathspec}} href="">
-			<i class="ui large {{mime object.type object.mime_type}} icon"></i>
-		</a>
+	{{#each viewObjects as |object|}}
+	    <tr class="{{if object.ui_deleting "disabled error"}}{{if object.ui_highlight "active"}}{{if object.ui_selected "warning"}}">
+	      <td class="left aligned" style="overflow:visible;">
+		{{#if batchMode }}
+ 		{{input type="checkbox" checked=object.ui_selected}}
+		{{else}}
 		<div class="ui icon top left pointing dropdown object-dropdown">
 		  <i class="blue ellipsis vertical icon"></i>
 		  <div class="ui inverted menu">
 		    <div {{action "examine" object.pathspec}} class="item"><i class="ui blue eye icon"></i>Examine</div>
 		  </div>
 		</div>
+		{{/if}}
+
 	      </td>
-	      <td {{action "default" object.type object.pathspec}} class="collapsing left aligned"><a href="">{{basename object.pathspec}}</a></td>
-	      <td class="right aligned collapsing">{{human-size object.type object.size 1024}}</td>
-	      <td class="right aligned collapsing">
+	      <td class="left aligned">
+		<a {{action "default" object.type object.pathspec}} href="">
+			<i class="ui large {{mime object.type object.mime_type}} icon"></i>
+		</a>
+	      </td>
+	      <td {{action "default" object.type object.pathspec}} class="left aligned"><a href="">{{basename object.pathspec}}</a></td>
+	      <td class="right aligned">{{human-size object.type object.size 1024}}</td>
+	      <td class="right aligned">
 	      {{#if object.ui_deleting}}
 		<i class="ui red icon circle notched loading small"></i>
 	      {{else}}
-		<a {{action "delete" object.pathspec}} href=""><i class="ui red icon large trash"></i></a>
+	      {{#unless batchMode}}
+		<a {{action "delete" object.pathspec}} href=""><i class="ui red icon trash"></i></a>
+	      {{/unless}}
 	      {{/if}}
 	      </td>
 	    </tr>

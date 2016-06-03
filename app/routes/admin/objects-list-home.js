@@ -7,35 +7,37 @@ export default Ember.Route.extend({
 	model(params) {
 		return Ember.RSVP.hash({
 			currentPathspec: params.pathspec || "",
-			objects: this.get('metaData').list(params.pathspec),
+			objects: this.get('metaData').list(params.pathspec) || [],
 			breadcrumbs: this.get('pathspecToBreadcrumbs')(params.pathspec),
 			uploadTotal: 0,
 			uploadValue: 0,
+			uploadFilename: "",
+			uploadFilesizeRatio: "",
+			isObjectBeingCreated: false,
+			isTreeBeingCreated: false,
 		});
-		Ember.run.later(() => {
-				
-			Ember.set(this.modelFor(this.routeName), 'uploadTotal', 10);
-			Ember.set(this.modelFor(this.routeName), 'uploadValue', 5);
-		}, 2000);
 	},
-
-	initUploadBar(total) {
+	
+	setFilesizeRatio(ratio) {
+		Ember.set(this.modelFor(this.routeName), 'uploadFilesizeRatio', ratio);
+	},
+	initUploadBar(total, firstFile) {
 		Ember.set(this.modelFor(this.routeName), 'uploadTotal', total);
 		Ember.set(this.modelFor(this.routeName), 'uploadValue', 0);
+		Ember.set(this.modelFor(this.routeName), 'uploadFilename', firstFile.name);
+		this.setFilesizeRatio("0/"+firstFile.size);
 	},
-	incrementUploadBar() {
-		let total = Ember.get(this.modelFor(this.routeName), 'uploadTotal');
+	incrementUploadBar(file) {
+		console.log(this.modelFor(this.routeName).uploadFilename);
 		let current = Ember.get(this.modelFor(this.routeName), 'uploadValue');
 		Ember.set(this.modelFor(this.routeName), 'uploadValue', current + 1);
-
-		if (current + 1 >= total) {
-			Ember.set(this.modelFor(this.routeName), 'uploadTotal', 0);
-			Ember.set(this.modelFor(this.routeName), 'uploadValue', 0);
-		}
+		Ember.set(this.modelFor(this.routeName), 'uploadFilename', file.name);
 	},
 	progressHandler(e) {
 		if(e.lengthComputable){
-			console.log(e.loaded+"/"+e.total);
+			let ratio = e.loaded + "/" + e.total;
+			this.setFilesizeRatio(ratio);
+			//console.log(e.loaded+"/"+e.total);
 			//$('progress').attr({value:e.loaded,max:e.total});
 		}
 	},
@@ -53,8 +55,54 @@ export default Ember.Route.extend({
 		pathspec = pathspec.replace(/^\/|\/$/g, '');
 		pathspec = pathspec + "/" + basename;
 		pathspec = pathspec.replace(/^\/|\/$/g, '');
-		return this.get('data').upload(pathspec, data, this.progressHandler);
+		return this.get('data').upload(pathspec, data, Ember.$.proxy(this.progressHandler, this));
 	},
+	handleUpload(files, indexes) {
+		if(indexes.length === 0) {
+			console.log('upload finished');
+			Ember.run.later(() => {
+				Ember.set(this.modelFor(this.routeName), 'uploadTotal', 0); // remove progress bar
+			}, 1500);
+			return
+		}
+		let file = files.item(indexes.shift());
+
+		let basename = file.name;
+		let data = file;
+		let pathspec = this.modelFor(this.routeName).currentPathspec;
+		pathspec = pathspec.replace(/^\/|\/$/g, '');
+		pathspec = pathspec + "/" + basename;
+		pathspec = pathspec.replace(/^\/|\/$/g, '');
+
+		let uploadPromise = this.getUploadPromise(file);
+		uploadPromise
+		.then(() => {
+			this.examineAfterCreation(pathspec);
+		})
+		.finally(() => {
+			this.incrementUploadBar(file);
+			this.handleUpload(files, indexes);
+		})
+	},
+
+	examineAfterCreation(pathspec) {
+		let examining = this.get('metaData').examine(pathspec);
+		examining
+		.then((object) => {
+			let old = this.modelFor(this.routeName).objects.findBy("pathspec", pathspec);
+			if (old) {
+				this.modelFor(this.routeName).objects.removeObject(old);
+			}
+
+			Ember.set(object, 'ui_highlight', true);
+			this.modelFor(this.routeName).objects.addObject(object);
+
+			Ember.run.later(() => {
+				Ember.set(object, 'ui_highlight', false);
+			}, 500)
+		})
+	},
+
 	actions: {
 
 		upload(files) {
@@ -63,29 +111,52 @@ export default Ember.Route.extend({
 			let uploadQueue = [];
 
 			// showUploadBar()
+			this.initUploadBar(numberOfFiles, files.item(0));
+
+			let indexes = [];	
 			for(let i = 0; i < files.length; i++) {
-				let uploadPromise = this.getUploadPromise(files.item(i));
-				uploadQueue.push(uploadPromise);
-				uploadPromise
-				.then(() => {
-					// addObjectToModel();
-					console.log("upload ok!");
-				})
-				.catch(() => {
-					// showError();
-					console.error("upload failed");
-				})
-				.finally(() => {
-				})
+				indexes.push(i);
 			}
-			Ember.RSVP.allSettled(uploadQueue).then((results) => {
-				console.log(results);
-			});
+			this.handleUpload(files, indexes);
 		},
+
+		createObject(objectName) {
+			Ember.set(this.modelFor(this.routeName), 'isObjectBeingCreated',true);
+
+			let pathspec = this.modelFor(this.routeName).currentPathspec + "/" + objectName;
+			pathspec = pathspec.replace(/^\/|\/$/g, '');
+
+			let uploadPromise = this.get('data').upload(pathspec, new Uint8Array(0));
+			uploadPromise
+			.then(() => {
+				this.examineAfterCreation(pathspec);
+			})
+			.finally(() => {
+				Ember.set(this.modelFor(this.routeName), 'isObjectBeingCreated', false);
+			})
+		},
+
+		createTree(treeName) {
+			Ember.set(this.modelFor(this.routeName), 'isTreeBeingCreated',true);
+
+			let pathspec = this.modelFor(this.routeName).currentPathspec + "/" + treeName;
+			pathspec = pathspec.replace(/^\/|\/$/g, '');
+
+			let createTreePromise = this.get('metaData').createTree(pathspec);
+			createTreePromise
+			.then(() => {
+				this.examineAfterCreation(pathspec);
+			})
+			.finally(() => {
+				Ember.set(this.modelFor(this.routeName), 'isTreeBeingCreated', false);
+			})
+		},
+
 		examine(pathspec) {
 		        pathspec = pathspec.replace(/^\/|\/$/g, '');
 			this.transitionTo('admin.objects-examine', pathspec);	
 		},
+
 		list(pathspec) {
 		        pathspec = pathspec.replace(/^\/|\/$/g, '');
 			this.transitionTo('admin.objects-list-nohome', pathspec);

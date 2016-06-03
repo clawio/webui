@@ -1,31 +1,35 @@
 <div class="ui one column stackable center aligned page grid">
-   <div class="column eight wide">
-	<div class="ui attached negative message">
-	  <div class="header">
-		  <i class="huge lock icon"></i>
-		  <p>Restricted Area
-		  </p>
-	  </div>
-		  <p>
-		     <br/>Authorized Personnel Only
-		     <br/>Any access to this area will be logged and processed
-		     <br/>Legal action will be taken against any unlawful activity
-		  </p>
+
+<div class="ui middle aligned center aligned grid">
+  <div class="column">
+    <h2 class="ui blue image header">
+      <img src="assets/images/logo.svg" class="image">
+      <div class="content">
+        Log-in to your account
+      </div>
+    </h2>
+    <form {{action "login" on="submit"}} class="ui large form">
+	<div class="ui inverted dimmer" >
+		<div class="ui text loader"><b>Log in</b></div>
 	</div>
-	<form {{action "login" on="submit"}} class="ui form attached fluid segment">
-		<div class="ui inverted dimmer" >
-			<div class="ui text loader"><b>Log in</b></div>
-		</div>
-		<div class="field">
-			<label>Username</label>
-			{{input name="username" type="text" value=identification autofocus=true}}
-		</div>
-		<div class="field">
-			<label>Password</label>
-			{{input name="password" type="password" value=password}}
-		</div>
-		<button type="submit" class="ui green button">Log in</button>
-		<div class="ui error message"></div>
-	</form>
-     </div>
+      <div class="ui stacked segment">
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+	    {{input name="username" type="text" value=identification autofocus=true placeholder="Username"}}
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+	    {{input name="password" type="password" value=password  placeholder="Password"}}
+          </div>
+        </div>
+        <div class="ui fluid large submit button">Login</div>
+      </div>
+      <div class="ui error message"></div>
+    </form>
+  </div>
+</div>
+
 </div>

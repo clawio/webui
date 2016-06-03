@@ -6,6 +6,25 @@ const internalError = "An unexpeted problem ocurred. Please contact the admin of
 export default Ember.Service.extend({
 	session: Ember.inject.service('session'),
 	
+	createTree(pathspec) {
+		let self = this;
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
+		  const headers = {};
+		  headers[headerName] = headerValue;
+			Ember.$.ajax({
+			    headers: headers,
+			    url: ENV.apis.metaDataBaseUrl+"createtree/"+pathspec,
+			    type: "POST",
+			}).done(function() {
+				resolve();
+			}).fail((error) => {
+				reject(error);	
+			});
+		});
+	       });
+	},
+	
 	examine(pathspec) {
 		if (!pathspec) {
 			pathspec = "";
@@ -15,20 +34,20 @@ export default Ember.Service.extend({
 
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
-			  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
-			  const headers = {};
-			  headers[headerName] = headerValue;
-				Ember.$.ajax({
-				    headers: headers,
-				    url: ENV.apis.metaDataBaseUrl+"examine/"+pathspec,
-				    type: "GET",
-				    dataType: "json"
-				}).done(function(response) {
-					resolve(response);
-				}).fail((error) => {
-					reject(error);	
-				});
+		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
+		  const headers = {};
+		  headers[headerName] = headerValue;
+			Ember.$.ajax({
+			    headers: headers,
+			    url: ENV.apis.metaDataBaseUrl+"examine/"+pathspec,
+			    type: "GET",
+			    dataType: "json"
+			}).done(function(response) {
+				resolve(response);
+			}).fail((error) => {
+				reject(error);	
 			});
+		});
                });
 	},
 
@@ -41,41 +60,39 @@ export default Ember.Service.extend({
 
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
-			  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
-			  const headers = {};
-			  headers[headerName] = headerValue;
-				Ember.$.ajax({
-				    headers: headers,
-				    url: ENV.apis.metaDataBaseUrl+"list/"+pathspec,
-				    type: "GET",
-				    dataType: "json"
-				}).done(function(response) {
-					resolve(response);
-				}).fail((error) => {
-					reject(error);	
-				});
+		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
+		  const headers = {};
+		  headers[headerName] = headerValue;
+			Ember.$.ajax({
+			    headers: headers,
+			    url: ENV.apis.metaDataBaseUrl+"list/"+pathspec,
+			    type: "GET",
+			    dataType: "json"
+			}).done(function(response) {
+				resolve(response || []);
+			}).fail((error) => {
+				reject(error);	
 			});
+		});
                });
 	},
 
 	delete(pathspec) {
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
-			Ember.run.later(() => {
-			  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
-			  const headers = {};
-			  headers[headerName] = headerValue;
-				Ember.$.ajax({
-				    headers: headers,
-				    url: ENV.apis.metaDataBaseUrl+"delete/"+pathspec,
-				    type: "DELETE",
-				}).done(function() {
-					resolve();
-				}).fail((error) => {
-					reject(error);	
-				});
+		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
+		  const headers = {};
+		  headers[headerName] = headerValue;
+			Ember.$.ajax({
+			    headers: headers,
+			    url: ENV.apis.metaDataBaseUrl+"delete/"+pathspec,
+			    type: "DELETE",
+			}).done(function() {
+				resolve();
+			}).fail((error) => {
+				reject(error);	
 			});
-			}, 3000);
+		});
 	       });
 	}
 });
