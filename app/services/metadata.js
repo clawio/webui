@@ -25,6 +25,32 @@ export default Ember.Service.extend({
 	       });
 	},
 	
+	move(fromPathspec, targetPathspec) {
+		// clean path. Remove first and last slashes.
+		fromPathspec = fromPathspec.replace(/^\/|\/$/g, '');
+		targetPathspec =  targetPathspec.replace(/^\/|\/$/g, '');
+
+		let self = this;
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
+		  const headers = {};
+		  headers[headerName] = headerValue;
+			let params = {};
+			params['target'] = targetPathspec;
+			const query = Ember.$.param(params)
+			Ember.$.ajax({
+			    headers: headers,
+			    url: ENV.apis.metaDataBaseUrl+"move/"+fromPathspec+"?"+query,
+			    type: "POST",
+			}).done(function(response) {
+				resolve(response);
+			}).fail((error) => {
+				reject(error);	
+			});
+		});
+               });
+	},
+
 	examine(pathspec) {
 		if (!pathspec) {
 			pathspec = "";

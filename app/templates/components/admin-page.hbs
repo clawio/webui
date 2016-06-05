@@ -1,4 +1,4 @@
-<div class="ui menu">
+<div class="ui menu fluid attached">
   {{#link-to "admin" class="item"}}
 	<img src="assets/images/logo.svg" />
   {{/link-to}}
@@ -19,6 +19,11 @@
 	  </div>
 	</a>
   </div>
+</div>
+<div class="ui bottom attached error message floating small">
+<div class="ui center aligned grid">
+Cannot move the object "ceph/source/examples"
+</div>
 </div>
 
 {{yield}}

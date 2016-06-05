@@ -119,6 +119,27 @@ export default Ember.Route.extend({
 			}
 			this.handleUpload(files, indexes);
 		},
+		
+		renameObject(object, newName) {
+			let o = this.modelFor(this.routeName).objects.findBy("pathspec", object.pathspec);
+			Ember.set(o, 'ui_renaming', true);
+			
+			let targetPathspec = object.pathspec.split("/");
+			// remove last part to obtain dirname	
+			targetPathspec.pop();
+			targetPathspec.push(newName);
+			targetPathspec = targetPathspec.join('/').replace(/^\/|\/$/g, '');
+
+			let renaming = this.get('metaData').move(o.pathspec, targetPathspec);
+			renaming
+			.then(() => {
+				this.modelFor(this.routeName).objects.removeObject(o);
+				this.examineAfterCreation(targetPathspec);
+			})
+			.finally((res) => {
+				Ember.set(o, 'ui_renaming', false);
+			})
+		},
 
 		createObject(objectName) {
 			Ember.set(this.modelFor(this.routeName), 'isObjectBeingCreated',true);

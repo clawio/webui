@@ -28,8 +28,17 @@ export default Ember.Component.extend({
 	selectedObjects: function() {
 		let viewObjects = this.get('viewObjects');	
 		let selected = viewObjects.filterBy('ui_selected', true).get('length');
-		if (selected >= viewObjects.length) { // check selectAll checkbox
-			this.set('selectedAll', true);
+		// TODO(labkode) the best way to achieve this behaviour is to rely on the selectedAll
+		// attribute but then we mute it twice and it is not allowed in Ember. A better solution
+		// may be to use computed properties.
+		if (selected >= viewObjects.length) {
+			this.$(".checkbox.select-all").prop("checked", true);
+			this.$(".checkbox.select-all").prop("indeterminate", false);
+		} else if (selected === 0) {
+			this.$(".checkbox.select-all").prop("checked", false);
+			this.$(".checkbox.select-all").prop("indeterminate", false);
+		} else {
+			this.$(".checkbox.select-all").prop("indeterminate", true);
 		}
 		return selected;
 	}.property('viewObjects.@each.ui_selected'),
@@ -56,7 +65,31 @@ export default Ember.Component.extend({
 		}
 	},
 
+	clearSelection() {
+		this.get('viewObjects').setEach('ui_selected', false);
+		this.set('selectedAll', false);
+	},
+
+	hideRenameInput() {
+		let o = this.get('viewObjects').findBy('ui_rename_input_visible', true);
+		Ember.set(o, 'ui_rename_input_visible', false);
+		this.set('newObjectName', "");
+	},
+
 	actions: {
+		processRename(data, event) {
+			let newObjectName= this.get('newObjectName');
+			if (event.keyCode === 13 && newObjectName)  { // enter key
+				let o = this.get('viewObjects').findBy('ui_rename_input_visible', true);
+				this.sendAction('renameObject', o, newObjectName);
+				this.hideRenameInput();
+			} else if (event.keyCode === 27) { // escape key
+				this.hideRenameInput();
+			}
+		},
+		hideRenameInput() {
+			this.hideRenameInput();
+		},
 		processNewTree(data, event) {
 			let treeName = this.get('newTreeName');
 			if (event.keyCode === 13 && treeName)  { // enter key
@@ -136,6 +169,7 @@ export default Ember.Component.extend({
 
 		toggleBatchMode() {
 			this.set('batchMode', !this.get('batchMode'));
+			this.clearSelection();
 		},
 
 		toggleSelectObject(object) {
@@ -149,14 +183,19 @@ export default Ember.Component.extend({
 			this.objects.forEach((o) => {
 				Ember.set(o, 'ui_selected', !o.ui_selected);
 			});	
-			this.$('.checkbox.select-one').checkbox('toggle');
 		},
 
 		deleteSelected() {
 			this.get('viewObjects').filterBy('ui_selected', true).forEach((o) => {
 				this.sendAction('delete', o.pathspec);
+				this.clearSelection();
 			});		
+		},
+
+		toggleRename(o) {
+			Ember.set(o, 'ui_rename_input_visible', !o.ui_rename_input_visible);
 		}
+
 
 	},
 	
@@ -167,6 +206,7 @@ export default Ember.Component.extend({
 	didRender() {
 		// TODO(labkode) this event is triggered too many times because of the upload progress handler
 		this.$(".dropdown").dropdown();
+		this.$(".rename-input").focus();
 
 		// trigger focus event
 		if (this.get('creatingObject')) {

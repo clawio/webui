@@ -1,5 +1,3 @@
-<div class="ui hidden divider"></div>
-<div class="ui hidden divider"></div>
 <div class="ui container">
 
 <div class="ui grid">
@@ -9,7 +7,10 @@
   </div>
 </div>
 
+
+
 {{#if uploadTotal}}
+<div class="ui hidden divider"></div>
 {{progress-bar total=uploadTotal value=uploadValue filename=uploadFilename sizeRatio=uploadFilesizeRatio}}
 {{/if}}
 
@@ -74,7 +75,7 @@
 	    <div {{action "showCreatingTree"}} class="item {{if creatingTree 'disabled'}} {{if isTreeBeingCreated 'disabled'}}">
 		<div><b><i class="ui yellow folder open icon new-tree-button"></i>New tree</b></div>
 	    </div>
-	    <div {{action "toggleBatchMode"}} class="item">
+	    <div {{action "toggleBatchMode"}} class="item {{unless viewObjects.length 'disabled'}} ">
 		<div><b><i class="ui green unoderered list icon"></i> Toggle batch mode</b></div>
 	    </div>
 	  </div>
@@ -86,9 +87,10 @@
       <th class="rigth aligned one wide"></th>
     </tr>
     {{#if batchMode}}
+    {{#if viewObjects.length}} 
     <tr>
       <th class="left aligned one wide">
-	  {{input type="checkbox" checked=selectedAll}}
+	  {{input type="checkbox" checked=selectedAll class="checkbox select-all"}}
       </th>
       <th class="left aligned one wide"></th>
       <th class="left aligned sorted ascending eleven wide">
@@ -105,18 +107,20 @@
       </th>
     </tr>
     {{/if}}
+    {{/if}}
   </thead>
   <tbody>
 	{{#each viewObjects as |object|}}
-	    <tr class="{{if object.ui_deleting "disabled error"}}{{if object.ui_highlight "active"}}{{if object.ui_selected "warning"}}">
+	    <tr class="{{if object.ui_deleting "disabled error"}}{{if object.ui_highlight "warning"}}{{if object.ui_selected "warning"}} {{if object.ui_renaming 'disabled warning'}}">
 	      <td class="left aligned" style="overflow:visible;">
 		{{#if batchMode }}
  		{{input type="checkbox" checked=object.ui_selected}}
 		{{else}}
 		<div class="ui icon top left pointing dropdown object-dropdown">
 		  <i class="blue ellipsis vertical icon"></i>
-		  <div class="ui inverted menu">
-		    <div {{action "examine" object.pathspec}} class="item"><i class="ui blue eye icon"></i>Examine</div>
+		  <div class="ui menu">
+		    <div {{action "examine" object.pathspec}} class="item"><i class="ui eye icon"></i>Examine</div>
+		    <div {{action "toggleRename" object}} class="item"><i class="ui edit icon"></i>Rename</div>
 		  </div>
 		</div>
 		{{/if}}
@@ -127,7 +131,24 @@
 			<i class="ui large {{mime object.type object.mime_type}} icon"></i>
 		</a>
 	      </td>
-	      <td {{action "default" object.type object.pathspec}} class="left aligned"><a href="">{{basename object.pathspec}}</a></td>
+	      {{#if object.ui_rename_input_visible}}
+		<td>
+		<div class="ui small input fluid">
+		  {{input type="text" value=newObjectName placeholder=object.pathspec class="rename-input" key-up="processRename" focus-out="hideRenameInput"}}
+		</div>
+		</td>
+	      {{else}}
+		{{#if object.ui_renaming}}
+		<td>
+		<div class="ui left icon input disabled loading small fluid">
+		  <input type="text" value="Renaming object" />
+		  <i class="ui blue cube icon"></i>
+		</div>
+		</td>
+		{{else}}
+	        <td {{action "default" object.type object.pathspec}} class="left aligned"><a href="">{{basename object.pathspec}}</a></td>
+		{{/if}}
+	      {{/if}}
 	      <td class="right aligned">{{human-size object.type object.size 1024}}</td>
 	      <td class="right aligned">
 	      {{#if object.ui_deleting}}
