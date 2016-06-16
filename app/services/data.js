@@ -11,7 +11,7 @@ export default Ember.Service.extend({
 			pathspec = "";
 		}
 		// clean path. Remove first and last slashes.
-		pathspec = pathspec.replace(/^\/|\/$/g, '');
+		pathspec = encodeURIComponent(pathspec.replace(/^\/|\/$/g, ''));
 
 		let t = this.get('session.data.authenticated')[ENV['ember-simple-auth-token']['tokenPropertyName']];
 		let params = {};

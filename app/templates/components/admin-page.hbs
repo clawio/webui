@@ -11,7 +11,7 @@
 	</a>
   </div>
   <div class="right menu">
-	<a class="ui pointing dropdown item identity">{{person.display_name}} (<b>@{{person.username}}</b>)>
+	<a class="ui pointing dropdown item identity">{{person.display_name}} (<b>@{{person.username}}</b>)
 	<i class="dropdown icon"></i>
 	  <div class="menu ui transition hidden">
 	  {{#link-to "admin.profile" class="item"}}<i class="blue user icon"></i>My profile{{/link-to}}
@@ -20,10 +20,12 @@
 	</a>
   </div>
 </div>
+<!--
 <div class="ui bottom attached error message floating small">
 <div class="ui center aligned grid">
 Cannot move the object "ceph/source/examples"
 </div>
 </div>
+-->
 
 {{yield}}
