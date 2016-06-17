@@ -7,6 +7,7 @@ export default Ember.Service.extend({
 	session: Ember.inject.service('session'),
 	
 	createTree(pathspec) {
+		pathspec = encodeURIComponent(pathspec);
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
 		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
@@ -29,6 +30,8 @@ export default Ember.Service.extend({
 		// clean path. Remove first and last slashes.
 		fromPathspec = fromPathspec.replace(/^\/|\/$/g, '');
 		targetPathspec =  targetPathspec.replace(/^\/|\/$/g, '');
+		fromPathspec = encodeURIComponent(fromPathspec);
+		targetPathspec= encodeURIComponent(targetPathspec);
 
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -57,6 +60,7 @@ export default Ember.Service.extend({
 		}
 		// clean path. Remove first and last slashes.
 		pathspec = pathspec.replace(/^\/|\/$/g, '');
+		pathspec = encodeURIComponent(pathspec);
 
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -83,6 +87,7 @@ export default Ember.Service.extend({
 		}
 		// clean path. Remove first and last slashes.
 		pathspec = pathspec.replace(/^\/|\/$/g, '');
+		pathspec = encodeURIComponent(pathspec);
 
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -104,6 +109,7 @@ export default Ember.Service.extend({
 	},
 
 	delete(pathspec) {
+		pathspec = encodeURIComponent(pathspec);
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
 		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {

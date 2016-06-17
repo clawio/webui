@@ -11,7 +11,8 @@ export default Ember.Service.extend({
 			pathspec = "";
 		}
 		// clean path. Remove first and last slashes.
-		pathspec = encodeURIComponent(pathspec.replace(/^\/|\/$/g, ''));
+		pathspec = pathspec.replace(/^\/|\/$/g, '');
+		pathspec = encodeURIComponent(pathspec);
 
 		let t = this.get('session.data.authenticated')[ENV['ember-simple-auth-token']['tokenPropertyName']];
 		let params = {};
@@ -21,6 +22,7 @@ export default Ember.Service.extend({
 	},
 
 	upload(pathspec, data, progressHandler) {
+		pathspec = encodeURIComponent(pathspec);
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
 			self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
