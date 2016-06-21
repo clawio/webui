@@ -1,35 +1,46 @@
-<div class="ui one column stackable center aligned page grid">
-
+<div class="ui row">
+<div class="ui one column  center aligned page grid">
 <div class="ui middle aligned center aligned grid">
   <div class="column">
-    <h2 class="ui blue image header">
-      <img src="assets/images/logo.svg" class="image">
-      <div class="content">
-        Log-in to your account
-      </div>
-    </h2>
-    <form {{action "login" on="submit"}} class="ui large form">
-	<div class="ui inverted dimmer" >
-		<div class="ui text loader"><b>Log in</b></div>
-	</div>
-      <div class="ui stacked segment">
+    <h1 class="white">ClawIO</h1>
+    <p class="white">Cloud [Sync] Storage solution that provides excellent performance, reliability and scalability</p>
+  </div>
+</div>
+
+</div>
+</div>
+
+<div class="ui hidden divider"/>
+<div class="ui hidden divider"/>
+
+<div class="ui dimmer" >
+<div class="ui text loader">Authenticating user</div>
+
+</div>
+<div class="ui row">
+<div class="ui one column  center aligned page grid">
+<div class="ui middle aligned center aligned grid">
+  <div class="column">
+    <form {{action "login" on="submit"}} class="ui form">
+      <div class="ui error message red label"/>
+      <div class="ui">
         <div class="field">
-          <div class="ui left icon input">
-            <i class="user icon"></i>
+          <div class="ui left icon input required">
+            <i class="blue user icon"></i>
 	    {{input name="username" type="text" value=identification autofocus=true placeholder="Username"}}
           </div>
         </div>
         <div class="field">
-          <div class="ui left icon input">
-            <i class="lock icon"></i>
+          <div class="ui left icon input required">
+            <i class="red lock icon"></i>
 	    {{input name="password" type="password" value=password  placeholder="Password"}}
           </div>
         </div>
-        <div class="ui fluid large submit button">Login</div>
+        <div class="ui fluid inverted yellow submit button">Login</div>
       </div>
-      <div class="ui error message"></div>
     </form>
   </div>
 </div>
 
+</div>
 </div>

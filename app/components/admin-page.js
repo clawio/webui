@@ -6,7 +6,10 @@ export default Ember.Component.extend({
 	actions: {
 		logout() { 
 			this.get('session').invalidate();
-		}
+		},
+		showError(error) {
+			this.set('error', error);	
+		},
 	},
 
 	didInsertElement: function() {
@@ -14,5 +17,8 @@ export default Ember.Component.extend({
 		this.$(".application-dropdown").dropdown();
 		this.$(".identity").dropdown();
             });
+	    Ember.run.later(() => {
+	    	this.set('error', "Cannot move object from A to B");
+	    }, 3000)
 	}
 });

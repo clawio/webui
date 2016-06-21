@@ -1,7 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+	classNames: ["juan"],
+
 	session: Ember.inject.service('session'),
+	metaData: Ember.inject.service('metadata'),
 
 	actions: {
 		login: function() { 
@@ -11,15 +14,21 @@ export default Ember.Component.extend({
 			
 			this.get('session').authenticate('authenticator:token', credentials)
 				.catch(() => {
-					let error = "Bad username or password";
+					let error = "Wrong username or password";
 					this.set('error', error);
 					this.$("form").addClass("error");
 					this.$("form").form("add errors", [error]);
 				})
-				.finally(() => {
-					this.$(".dimmer").removeClass("active");	
-					self.get('onUserDidAuthenticated')();
-				});
+				.then(() => {
+					// try to create user home directory				
+					self.get('metaData').init()
+					.catch(() => {
+						let error = "Cannot create your home directory";
+						this.set('error', error);
+						this.$("form").addClass("error");
+						this.$("form").form("add errors", [error]);
+					});
+				})
 		} 
 	},
 
@@ -31,18 +40,17 @@ export default Ember.Component.extend({
 					identifier: 'username',
 					rules: [{
 					  type: 'empty',
-					  prompt: 'Please enter an username'
+					  prompt: 'You must provide a valid username'
 					}]
 				},
 			        password: {
 					identifier: 'password',
 					rules: [{
 					  type: 'empty',
-					  prompt: 'Please enter a password'
+					  prompt: 'You must provide a password'
 					}]
 				}
 			},
-			on: 'blur',
 		});
             });
 	}

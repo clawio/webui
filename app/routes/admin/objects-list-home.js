@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Route.extend({
 	metaData: Ember.inject.service('metadata'),
 	data: Ember.inject.service('data'),
+	notify: Ember.inject.service('notify'),
 
 	model(params) {
 		return Ember.RSVP.hash({
@@ -35,10 +36,9 @@ export default Ember.Route.extend({
 	},
 	progressHandler(e) {
 		if(e.lengthComputable){
+			// update upload progress bar
 			let ratio = e.loaded + "/" + e.total;
 			this.setFilesizeRatio(ratio);
-			//console.log(e.loaded+"/"+e.total);
-			//$('progress').attr({value:e.loaded,max:e.total});
 		}
 	},
 	getTotalSize(files) {
@@ -79,6 +79,9 @@ export default Ember.Route.extend({
 		.then(() => {
 			this.examineAfterCreation(pathspec);
 		})
+		.catch((error) => {
+			this.get('notify').error("cannot upload object")
+		})
 		.finally(() => {
 			this.incrementUploadBar(file);
 			this.handleUpload(files, indexes);
@@ -101,10 +104,12 @@ export default Ember.Route.extend({
 				Ember.set(object, 'ui_highlight', false);
 			}, 500)
 		})
+		.catch((error) => {
+			this.get('notify').error("cannot examine object")
+		})
 	},
 
 	actions: {
-
 		upload(files) {
 			let numberOfFiles = files.length;
 			let totalSize = this.getTotalSize(files);
@@ -136,6 +141,9 @@ export default Ember.Route.extend({
 				this.modelFor(this.routeName).objects.removeObject(o);
 				this.examineAfterCreation(targetPathspec);
 			})
+			.catch((error) => {
+				this.get('notify').error("cannot remove object")
+			})
 			.finally((res) => {
 				Ember.set(o, 'ui_renaming', false);
 			})
@@ -152,6 +160,9 @@ export default Ember.Route.extend({
 			.then(() => {
 				this.examineAfterCreation(pathspec);
 			})
+			.catch((error) => {
+				this.get('notify').error("cannot create blob")
+			})
 			.finally(() => {
 				Ember.set(this.modelFor(this.routeName), 'isObjectBeingCreated', false);
 			})
@@ -167,6 +178,9 @@ export default Ember.Route.extend({
 			createTreePromise
 			.then(() => {
 				this.examineAfterCreation(pathspec);
+			})
+			.catch((error) => {
+				this.get('notify').error("cannot create tree")
 			})
 			.finally(() => {
 				Ember.set(this.modelFor(this.routeName), 'isTreeBeingCreated', false);
@@ -194,6 +208,7 @@ export default Ember.Route.extend({
 			})
 			.catch((res) => {
 				Ember.set(object, 'ui_deleting', false);
+				this.get('notify').error("cannot create tree")
 			})
 		},
 

@@ -6,6 +6,25 @@ const internalError = "An unexpeted problem ocurred. Please contact the admin of
 export default Ember.Service.extend({
 	session: Ember.inject.service('session'),
 	
+	init() {
+		let self = this;
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
+		  const headers = {};
+		  headers[headerName] = headerValue;
+			Ember.$.ajax({
+			    headers: headers,
+			    url: ENV.apis.metaDataBaseUrl+"init",
+			    type: "POST",
+			}).done(function() {
+				resolve();
+			}).fail((error) => {
+				reject(error);	
+			});
+		});
+	       });
+	},
+
 	createTree(pathspec) {
 		pathspec = encodeURIComponent(pathspec);
 		let self = this;
