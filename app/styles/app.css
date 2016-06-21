@@ -19,3 +19,7 @@
 .white {
 	color: white;
 }
+
+.clawio-hidden {
+	display: none;
+}

@@ -8,12 +8,29 @@ export default Ember.Service.extend({
 		this.set('messages', []);
 	},
 
-	error(msg) {
-		let o = Ember.Object.create({type: "error", msg: msg});
+	error(text) {
+		let o = Ember.Object.create({color: "red",text:text, readed: false});
 		this.get('messages').pushObject(o);	
+		this.readLater(o);
 	},
 
-	getMessages() {
-		return this.get('messages');
+	info(text) {
+		let o = Ember.Object.create({color: "blue",text: text, readed: false});
+		this.get('messages').pushObject(o);	
+		this.readLater(o);
+	},
+
+	markAsReaded(msg) {
+		Ember.set(msg, 'readed', true);
+		this.get('messages').removeObject(msg);
+		this.get('messages').pushObject(msg);
+	},
+
+	readLater(msg) {
+		Ember.run.later(() => {
+			Ember.set(msg, 'readed', true);
+			this.get('messages').removeObject(msg);
+			this.get('messages').pushObject(msg);
+		}, 2500);
 	}
 });

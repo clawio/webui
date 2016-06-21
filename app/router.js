@@ -12,6 +12,7 @@ Router.map(function() {
     this.route('objects-list-home', {path: '/objects/list/'});
     this.route('objects-list-nohome', {path: '/objects/list/*pathspec'})
     this.route('objects-examine', {path: '/objects/examine/*pathspec'});
+    this.route('activity');
   });
   this.route('public', function() {
     this.route('contact');

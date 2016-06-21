@@ -78,9 +78,10 @@ export default Ember.Route.extend({
 		uploadPromise
 		.then(() => {
 			this.examineAfterCreation(pathspec);
+			this.get('notify').info(`"${pathspec}" uploaded successfuly`);
 		})
 		.catch((error) => {
-			this.get('notify').error("cannot upload object")
+			this.get('notify').error(`"${pathspec}" cannot be uploaded`)
 		})
 		.finally(() => {
 			this.incrementUploadBar(file);
@@ -105,7 +106,7 @@ export default Ember.Route.extend({
 			}, 500)
 		})
 		.catch((error) => {
-			this.get('notify').error("cannot examine object")
+			this.get('notify').error(`"${pathspec}" cannot be examined`)
 		})
 	},
 
@@ -142,7 +143,7 @@ export default Ember.Route.extend({
 				this.examineAfterCreation(targetPathspec);
 			})
 			.catch((error) => {
-				this.get('notify').error("cannot remove object")
+				this.get('notify').error(`"${o.pathspec}" cannot be renamed to ${targetPathspec}`)
 			})
 			.finally((res) => {
 				Ember.set(o, 'ui_renaming', false);
@@ -161,7 +162,7 @@ export default Ember.Route.extend({
 				this.examineAfterCreation(pathspec);
 			})
 			.catch((error) => {
-				this.get('notify').error("cannot create blob")
+				this.get('notify').error(`"${pathspec}" cannot be created`)
 			})
 			.finally(() => {
 				Ember.set(this.modelFor(this.routeName), 'isObjectBeingCreated', false);
@@ -180,7 +181,7 @@ export default Ember.Route.extend({
 				this.examineAfterCreation(pathspec);
 			})
 			.catch((error) => {
-				this.get('notify').error("cannot create tree")
+				this.get('notify').error(`"${pathspec}" cannot be created`)
 			})
 			.finally(() => {
 				Ember.set(this.modelFor(this.routeName), 'isTreeBeingCreated', false);
@@ -208,7 +209,7 @@ export default Ember.Route.extend({
 			})
 			.catch((res) => {
 				Ember.set(object, 'ui_deleting', false);
-				this.get('notify').error("cannot create tree")
+				this.get('notify').error(`"${pathspec}" cannot be deleted`)
 			})
 		},
 
