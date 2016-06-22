@@ -2,6 +2,8 @@ import Ember from 'ember';
 
 
 export default Ember.Component.extend({
+	helpers: Ember.inject.service('helpers'),
+
 	objects: [],
 	viewObjects: [],
 	breadcrumbs: [],
@@ -77,14 +79,16 @@ export default Ember.Component.extend({
 	},
 
 	actions: {
-		toggleModTimePopup(o) {
-		},
-
 		processRename(data, event) {
 			let newObjectName= this.get('newObjectName');
+			console.log(newObjectName);
 			if (event.keyCode === 13 && newObjectName)  { // enter key
 				let o = this.get('viewObjects').findBy('ui_rename_input_visible', true);
-				this.sendAction('renameObject', o, newObjectName);
+
+				// trigger rename only if new name is different from old name 
+				if (this.get('helpers').basename(o.pathspec) !== newObjectName) {
+					this.sendAction('renameObject', o, newObjectName);
+				}
 				this.hideRenameInput();
 			} else if (event.keyCode === 27) { // escape key
 				this.hideRenameInput();
@@ -196,6 +200,7 @@ export default Ember.Component.extend({
 		},
 
 		toggleRename(o) {
+			this.set('newObjectName', this.get('helpers').basename(o.pathspec));
 			Ember.set(o, 'ui_rename_input_visible', !o.ui_rename_input_visible);
 		}
 
@@ -226,8 +231,8 @@ export default Ember.Component.extend({
 
 		// add modTime popup to all elements
 		this.get('viewObjects').forEach((o) => {
-			let popup = $(`[data-clawio-pathspec='${o.pathspec}'] .clawio-modtime  small`);
+			let popup = Ember.$(`[data-clawio-pathspec='${o.pathspec}'] .clawio-modtime  small`);
 			popup.popup();	
-		})
+		});
 	}
 });

@@ -1,8 +1,6 @@
 import Ember from 'ember';
 import ENV from 'webui/config/environment';
 
-const internalError = "An unexpeted problem ocurred. Please contact the admin of the service."
-
 export default Ember.Service.extend({
 	session: Ember.inject.service('session'),
 	
@@ -59,7 +57,7 @@ export default Ember.Service.extend({
 		  headers[headerName] = headerValue;
 			let params = {};
 			params['target'] = targetPathspec;
-			const query = Ember.$.param(params)
+			const query = Ember.$.param(params);
 			Ember.$.ajax({
 			    headers: headers,
 			    url: ENV.apis.metaDataBaseUrl+"move/"+fromPathspec+"?"+query,

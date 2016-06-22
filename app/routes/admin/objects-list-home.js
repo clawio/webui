@@ -63,12 +63,11 @@ export default Ember.Route.extend({
 			Ember.run.later(() => {
 				Ember.set(this.modelFor(this.routeName), 'uploadTotal', 0); // remove progress bar
 			}, 1500);
-			return
+			return;
 		}
 		let file = files.item(indexes.shift());
 
 		let basename = file.name;
-		let data = file;
 		let pathspec = this.modelFor(this.routeName).currentPathspec;
 		pathspec = pathspec.replace(/^\/|\/$/g, '');
 		pathspec = pathspec + "/" + basename;
@@ -79,13 +78,13 @@ export default Ember.Route.extend({
 		.then(() => {
 			this.examineAfterCreation(pathspec);
 		})
-		.catch((error) => {
-			this.get('notify').error(`"${pathspec}" cannot be uploaded`)
+		.catch(() => {
+			this.get('notify').error(`"${pathspec}" cannot be uploaded`);
 		})
 		.finally(() => {
 			this.incrementUploadBar(file);
 			this.handleUpload(files, indexes);
-		})
+		});
 	},
 
 	examineAfterCreation(pathspec) {
@@ -102,18 +101,16 @@ export default Ember.Route.extend({
 
 			Ember.run.later(() => {
 				Ember.set(object, 'ui_highlight', false);
-			}, 500)
+			}, 500);
 		})
-		.catch((error) => {
-			this.get('notify').error(`"${pathspec}" cannot be examined`)
-		})
+		.catch(() => {
+			this.get('notify').error(`"${pathspec}" cannot be examined`);
+		});
 	},
 
 	actions: {
 		upload(files) {
 			let numberOfFiles = files.length;
-			let totalSize = this.getTotalSize(files);
-			let uploadQueue = [];
 
 			// showUploadBar()
 			this.initUploadBar(numberOfFiles, files.item(0));
@@ -135,18 +132,19 @@ export default Ember.Route.extend({
 			targetPathspec.push(newName);
 			targetPathspec = targetPathspec.join('/').replace(/^\/|\/$/g, '');
 
+			console.log(targetPathspec);
 			let renaming = this.get('metaData').move(o.pathspec, targetPathspec);
 			renaming
 			.then(() => {
 				this.modelFor(this.routeName).objects.removeObject(o);
 				this.examineAfterCreation(targetPathspec);
 			})
-			.catch((error) => {
-				this.get('notify').error(`"${o.pathspec}" cannot be renamed to "${targetPathspec}"`)
+			.catch(() => {
+				this.get('notify').error(`"${o.pathspec}" cannot be renamed to "${targetPathspec}"`);
 			})
-			.finally((res) => {
+			.finally(() => {
 				Ember.set(o, 'ui_renaming', false);
-			})
+			});
 		},
 
 		createObject(objectName) {
@@ -160,12 +158,12 @@ export default Ember.Route.extend({
 			.then(() => {
 				this.examineAfterCreation(pathspec);
 			})
-			.catch((error) => {
-				this.get('notify').error(`"${pathspec}" cannot be created`)
+			.catch(() => {
+				this.get('notify').error(`"${pathspec}" cannot be created`);
 			})
 			.finally(() => {
 				Ember.set(this.modelFor(this.routeName), 'isObjectBeingCreated', false);
-			})
+			});
 		},
 
 		createTree(treeName) {
@@ -179,12 +177,12 @@ export default Ember.Route.extend({
 			.then(() => {
 				this.examineAfterCreation(pathspec);
 			})
-			.catch((error) => {
-				this.get('notify').error(`"${pathspec}" cannot be created`)
+			.catch(() => {
+				this.get('notify').error(`"${pathspec}" cannot be created`);
 			})
 			.finally(() => {
 				Ember.set(this.modelFor(this.routeName), 'isTreeBeingCreated', false);
-			})
+			});
 		},
 
 		examine(pathspec) {
@@ -205,11 +203,12 @@ export default Ember.Route.extend({
 			deleting
 			.then(() => {
 				this.modelFor(this.routeName).objects.removeObject(object);
+				this.get('notify').info(`"${pathspec}" deleted`);
 			})
-			.catch((res) => {
+			.catch(() => {
 				Ember.set(object, 'ui_deleting', false);
-				this.get('notify').error(`"${pathspec}" cannot be deleted`)
-			})
+				this.get('notify').error(`"${pathspec}" cannot be deleted`);
+			});
 		},
 
 		download(pathspec) {

@@ -56,8 +56,8 @@ module.exports = function(environment) {
 
   ENV['ember-simple-auth'] = {
       authorizer: 'authorizer:token',
-      routeAfterAuthentication: 'admin',
-      routeIfAlreadyAuthenticated: 'admin'
+      routeAfterAuthentication: 'admin.objects-list-home',
+      routeIfAlreadyAuthenticated: 'admin.objects-list-home'
   };
   ENV['ember-simple-auth-token'] = {
 	  serverTokenEndpoint: ENV['apis'].authBaseUrl+'token',

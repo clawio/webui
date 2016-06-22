@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import ENV from 'webui/config/environment';
 
-const internalError = "An unexpeted problem ocurred. Please contact the admin of the service."
+const internalError = "An unexpeted problem ocurred. Please contact the admin of the service.";
 
 export default Ember.Service.extend({
 	session: Ember.inject.service('session'),
@@ -17,7 +17,7 @@ export default Ember.Service.extend({
 		let t = this.get('session.data.authenticated')[ENV['ember-simple-auth-token']['tokenPropertyName']];
 		let params = {};
 		params[ENV['ember-simple-auth-token']['tokenPropertyName']]= t;
-		const query = Ember.$.param(params)
+		const query = Ember.$.param(params);
 		return ENV.apis.dataBaseUrl+"download/"+pathspec+"?"+query;
 	},
 
@@ -28,9 +28,9 @@ export default Ember.Service.extend({
 			self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
 				  const headers = {};
 				  headers[headerName] = headerValue;
-				Ember.$.ajax({
+				  Ember.$.ajax({
 				    xhr: function() {  // Custom XMLHttpRequest
-					    var myXhr = $.ajaxSettings.xhr();
+					    var myXhr = Ember.$.ajaxSettings.xhr();
 					    if(myXhr.upload){ // Check if upload property exists
 						myXhr.upload.addEventListener('progress',progressHandler, false); // For handling the progress of the upload
 					    }
@@ -42,7 +42,7 @@ export default Ember.Service.extend({
 				    headers,
 				    url: ENV.apis.dataBaseUrl+"upload/"+pathspec,
 				    type: "PUT",
-				}).done(function(response) {
+				}).done(function() {
 					resolve();
 				}).fail((resp) => {
 					let error = internalError;

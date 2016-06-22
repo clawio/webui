@@ -3,7 +3,7 @@
 <div class="ui fluid vertical labeled buttons">
 {{#each messages as |msg|}}
 
-<div class="ui animated fade {{msg.color}} button" {{action "markAsReaded" msg}}>
+<div class="ui animated fade {{msg.color}} inverted button" {{action "markAsReaded" msg}}>
   <i class="info circle icon"></i>{{msg.text}}
   <div class="hidden content">Close <i class="close icon"></i></div>
 </div>

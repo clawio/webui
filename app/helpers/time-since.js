@@ -4,8 +4,8 @@ export function timeSince(params/*, hash*/) {
 	// data is given in nanoseconds so we need to convert it to ms 
 	let date = params[0] / 1000000;
 
-	var seconds = Math.floor((new Date() - date) / 1000);
-	var interval = Math.floor(seconds / 31536000);
+	let seconds = Math.floor((new Date() - date) / 1000);
+	let interval = Math.floor(seconds / 31536000);
 
 	if (interval > 1) {
 	return interval + " years ago";
@@ -27,7 +27,7 @@ export function timeSince(params/*, hash*/) {
 	return interval + " minutes ago";
 	}
 	let s = Math.floor(seconds);
-	if (s == 0) {
+	if (s === 0) {
 		return "now";
 	}
 	return s + " seconds ago";

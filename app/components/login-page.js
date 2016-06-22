@@ -31,7 +31,7 @@ export default Ember.Component.extend({
 						this.$("form").form("add errors", [error]);
 						this.$(".dimmer").removeClass("active");
 					});
-				})
+				});
 		} 
 	},
 

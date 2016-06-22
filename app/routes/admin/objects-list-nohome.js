@@ -5,7 +5,7 @@ export default ObjectsListHomeRoute.extend({
 	notify: Ember.inject.service('notify'),
 
 	actions: {
-		error(error, transition) {
+		error() {
 			this.get('notify').error("tree not found");
 			this.transitionTo('admin.objects-list-home');	
 		}
