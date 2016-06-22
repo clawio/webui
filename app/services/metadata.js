@@ -6,7 +6,7 @@ const internalError = "An unexpeted problem ocurred. Please contact the admin of
 export default Ember.Service.extend({
 	session: Ember.inject.service('session'),
 	
-	init() {
+	createHomeTree() {
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
 		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {

@@ -78,7 +78,6 @@ export default Ember.Route.extend({
 		uploadPromise
 		.then(() => {
 			this.examineAfterCreation(pathspec);
-			this.get('notify').info(`"${pathspec}" uploaded successfuly`);
 		})
 		.catch((error) => {
 			this.get('notify').error(`"${pathspec}" cannot be uploaded`)
@@ -143,7 +142,7 @@ export default Ember.Route.extend({
 				this.examineAfterCreation(targetPathspec);
 			})
 			.catch((error) => {
-				this.get('notify').error(`"${o.pathspec}" cannot be renamed to ${targetPathspec}`)
+				this.get('notify').error(`"${o.pathspec}" cannot be renamed to "${targetPathspec}"`)
 			})
 			.finally((res) => {
 				Ember.set(o, 'ui_renaming', false);

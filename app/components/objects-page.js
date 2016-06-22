@@ -77,6 +77,9 @@ export default Ember.Component.extend({
 	},
 
 	actions: {
+		toggleModTimePopup(o) {
+		},
+
 		processRename(data, event) {
 			let newObjectName= this.get('newObjectName');
 			if (event.keyCode === 13 && newObjectName)  { // enter key
@@ -220,5 +223,11 @@ export default Ember.Component.extend({
 		if (this.get('batchMode')) {
 			this.$(".checkbox").checkbox();
 		}
+
+		// add modTime popup to all elements
+		this.get('viewObjects').forEach((o) => {
+			let popup = $(`[data-clawio-pathspec='${o.pathspec}'] .clawio-modtime  small`);
+			popup.popup();	
+		})
 	}
 });

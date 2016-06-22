@@ -8,6 +8,7 @@ export default Ember.Component.extend({
 
 	actions: {
 		login: function() { 
+			console.log("called");
 			this.$(".dimmer").addClass("active");
 			let credentials = this.getProperties('identification', 'password');
 			let self = this;	
@@ -18,15 +19,17 @@ export default Ember.Component.extend({
 					this.set('error', error);
 					this.$("form").addClass("error");
 					this.$("form").form("add errors", [error]);
+					this.$(".dimmer").removeClass("active");
 				})
 				.then(() => {
 					// try to create user home directory				
-					self.get('metaData').init()
+					self.get('metaData').createHomeTree()
 					.catch(() => {
 						let error = "Cannot create your home directory";
 						this.set('error', error);
 						this.$("form").addClass("error");
 						this.$("form").form("add errors", [error]);
+						this.$(".dimmer").removeClass("active");
 					});
 				})
 		} 
