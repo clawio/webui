@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-	classNames: ["juan"],
+	classNames: ["clawio-full-centered"],
 
 	session: Ember.inject.service('session'),
 	metaData: Ember.inject.service('metadata'),

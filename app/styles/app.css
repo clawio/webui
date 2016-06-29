@@ -1,15 +1,4 @@
-.Site {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-}
-
-.Site-content {
-  flex: 1;
-}
-
-
-.juan {
+.clawio-full-centered {
 	min-height:100vh;
 	display:flex;
 	flex-direction:column;
@@ -20,6 +9,3 @@
 	color: white;
 }
 
-.clawio-hidden {
-	display: none;
-}
