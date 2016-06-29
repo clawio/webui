@@ -1,7 +1,7 @@
 {
   "name": "webui",
-  "version": "0.0.0",
-  "description": "Small description for webui goes here",
+  "version": "0.1.0",
+  "description": "ClawIO Web User Interface",
   "private": true,
   "directories": {
     "doc": "doc",
