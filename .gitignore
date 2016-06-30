@@ -15,3 +15,4 @@ testem.log
 
 .DS_Store
 /dist
+*.tar.gz
