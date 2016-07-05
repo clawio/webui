@@ -31,6 +31,6 @@ export default Ember.Service.extend({
 			Ember.set(msg, 'readed', true);
 			this.get('messages').removeObject(msg);
 			this.get('messages').pushObject(msg);
-		}, 2500);
+		}, 5000);
 	}
 });

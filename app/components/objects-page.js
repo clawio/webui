@@ -202,6 +202,10 @@ export default Ember.Component.extend({
 		toggleRename(o) {
 			this.set('newObjectName', this.get('helpers').basename(o.pathspec));
 			Ember.set(o, 'ui_rename_input_visible', !o.ui_rename_input_visible);
+		},
+
+		openShareDialog(o) {
+			Ember.$(".ui.modal").modal("show");
 		}
 
 

@@ -9,9 +9,11 @@ export default Ember.Component.extend({
 		},	
 	},
 
-	messages: function() {
+	latestMessage: function() {
 		let val = this.get('notify').messages.filterBy('readed', false);
-		console.log(val);
-		return val;
+		// just return the latest message to not pollute the interface with messages
+		if (val.length > 0) {
+			return val[val.length -1];
+		}
 	}.property('notify.messages.[]'),
 });
