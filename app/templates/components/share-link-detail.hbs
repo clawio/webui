@@ -1,0 +1,17 @@
+<form class="ui form">
+<div class="ui field">
+<div class="ui action input fluid">
+  <input readonly type="text" value="http://localhost:4200/public/link/info/ajsfsdaasfa-1231312-jasdjfa">
+  <button {{action "copy"}} class="ui icon button basic" data-tooltip="Copy link">
+    <i class="blue copy icon"></i>
+  </button>
+</div>
+</div>
+<div class="ui field">
+<button {{action "unlink"}} class="ui button negative" 
+	data-tooltip="This action will remove the link so it will not be accessible anymore"
+	data-position="bottom center">
+ <i class="ui icon unlinkify"/>
+Unlink
+</button> </div>
+</form>

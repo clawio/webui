@@ -6,15 +6,116 @@ export default Ember.Component.extend({
 
 	objects: [],
 	viewObjects: [],
+	filterterm: "",
+
 	breadcrumbs: [],
+
+
 	uploadTotal: 0,
 	uploadValue: 0,
 	uploadFilename: "",
 	uploadFilesizeRatio: "",
-	isObjectBeingCreated: false,
-	isTreeBeingCreated: false,
+
 	batchMode: false,
 	countSelectedObjects: 0,
+	
+	actions: {
+		processRename(data, event) {
+			let newObjectName= this.get('newObjectName');
+			console.log(newObjectName);
+			if (event.keyCode === 13 && newObjectName)  { // enter key
+				let o = this.get('viewObjects').findBy('ui_rename_input_visible', true);
+
+				// trigger rename only if new name is different from old name 
+				if (this.get('helpers').basename(o.pathspec) !== newObjectName) {
+					this.sendAction('renameObject', o, newObjectName);
+				}
+				this.hideRenameInput();
+			} else if (event.keyCode === 27) { // escape key
+				this.hideRenameInput();
+			}
+		},
+
+		hideRenameInput() {
+			this.hideRenameInput();
+		},
+
+		showTreeInput() {
+			this.sendAction('showTreeInput');
+		},
+
+		showBlobInput() {
+			this.sendAction('showBlobInput');
+		},
+
+		triggerUpload() {
+			this.$(".x-file--input :input").click();
+		},
+		didSelectFiles(files) {
+			this.sendAction('upload', files);	
+		},
+
+		examine(pathspec) {
+			this.sendAction('examine', pathspec);		
+		},
+
+		list(pathspec) {
+			this.sendAction('list', pathspec);
+		},
+
+		default(type, pathspec) {
+			if (!this.get('batchMode')) {
+				if (type === 'tree' ) {
+					this.sendAction('list', pathspec);
+				} else {
+					this.sendAction('download', pathspec);
+				}
+			}
+		},
+
+		delete(pathspec) {
+			this.sendAction('delete', pathspec);
+		},
+
+		filter() {
+			this.filterObjects();
+		},
+
+		toggleBatchMode() {
+			this.set('batchMode', !this.get('batchMode'));
+			this.clearSelection();
+		},
+
+		toggleSelectObject(object) {
+			let o = this.viewObjects.findBy('pathspec', object.pathspec);
+			Ember.set(o, 'ui_selected', !o.ui_selected);
+		},
+
+		toggleAll() {
+			this.set('selectedAll', this.get('selectedAll'));
+			this.objects.forEach((o) => {
+				Ember.set(o, 'ui_selected', !o.ui_selected);
+			});	
+		},
+
+		deleteSelected() {
+			this.get('viewObjects').filterBy('ui_selected', true).forEach((o) => {
+				this.sendAction('delete', o.pathspec);
+				this.clearSelection();
+			});		
+		},
+
+		toggleRename(o) {
+			this.set('newObjectName', this.get('helpers').basename(o.pathspec));
+			Ember.set(o, 'ui_rename_input_visible', !o.ui_rename_input_visible);
+		},
+
+		share(o) {
+			this.sendAction('share', o.pathspec);
+		}
+
+
+	},
 	
 	initializeViewObjects: function() {
 		this.set('viewObjects', this.get('objects'));
@@ -26,6 +127,10 @@ export default Ember.Component.extend({
 		// order specified by the column order criteria.
 		this.filterObjects();
 	}.observes('objects.[]'),
+
+	filtertermChanged: function() {
+		this.filterObjects();
+	}.observes('filterterm'),
 
 	selectedObjects: function() {
 		let viewObjects = this.get('viewObjects');	
@@ -54,6 +159,7 @@ export default Ember.Component.extend({
 		}	
 	}.observes('selectedAll'),
 
+
 	filterObjects() {
 		let filterterm = this.get('filterterm');
 		if (!filterterm) {
@@ -78,139 +184,6 @@ export default Ember.Component.extend({
 		this.set('newObjectName', "");
 	},
 
-	actions: {
-		processRename(data, event) {
-			let newObjectName= this.get('newObjectName');
-			console.log(newObjectName);
-			if (event.keyCode === 13 && newObjectName)  { // enter key
-				let o = this.get('viewObjects').findBy('ui_rename_input_visible', true);
-
-				// trigger rename only if new name is different from old name 
-				if (this.get('helpers').basename(o.pathspec) !== newObjectName) {
-					this.sendAction('renameObject', o, newObjectName);
-				}
-				this.hideRenameInput();
-			} else if (event.keyCode === 27) { // escape key
-				this.hideRenameInput();
-			}
-		},
-		hideRenameInput() {
-			this.hideRenameInput();
-		},
-		processNewTree(data, event) {
-			let treeName = this.get('newTreeName');
-			if (event.keyCode === 13 && treeName)  { // enter key
-				this.set('creatingTree', false);
-				this.sendAction('createTree', treeName);
-			} else if (event.keyCode === 27) { // escape key
-				this.set('newTreeName', "");
-				this.set('creatingTree', false);
-			}
-		},
-		showCreatingTree() {
-			this.set('newTreeName', "");
-			this.set('creatingTree', true);
-		
-		},
-		hideCreatingTree() {
-			if (!this.get('processingCreateTree')) {
-				this.set('newTreeName', "");
-				this.set('creatingTree', false);
-			}
-		},
-		processNewObject(data, event) {
-			let objectName = this.get('newObjectName');
-			if (event.keyCode === 13 && objectName)  { // enter key
-				this.set('creatingObject', false);
-				this.sendAction('createObject', objectName);
-			} else if (event.keyCode === 27) { // escape key
-				this.set('newObjectName', "");
-				this.set('creatingObject', false);
-			}
-		},
-		showCreatingObject() {
-			this.set('newObjectName', "");
-			this.set('creatingObject', true);
-		
-		},
-		hideCreatingObject() {
-			if (!this.get('processingCreateObject')) {
-				this.set('newObjectName', "");
-				this.set('creatingObject', false);
-			}
-		},
-		triggerUpload() {
-			this.$(".x-file--input :input").click();
-		},
-		didSelectFiles(files) {
-			this.sendAction('upload', files);	
-		},
-		examine(pathspec) {
-			this.sendAction('examine', pathspec);		
-		},
-		list(pathspec) {
-			this.sendAction('list', pathspec);
-		},
-
-		default(type, pathspec) {
-			if (!this.get('batchMode')) {
-				if (type === 'tree' ) {
-					this.sendAction('list', pathspec);
-				} else {
-					this.sendAction('download', pathspec);
-				}
-			}
-		},
-		delete(pathspec) {
-			this.sendAction('delete', pathspec);
-		},
-
-		filter() {
-			this.filterObjects();
-		},
-
-		clearFilter() {
-			this.set('filterterm', '');	
-			this.filterObjects();
-		},
-
-		toggleBatchMode() {
-			this.set('batchMode', !this.get('batchMode'));
-			this.clearSelection();
-		},
-
-		toggleSelectObject(object) {
-			console.log(object);
-			let o = this.viewObjects.findBy('pathspec', object.pathspec);
-			Ember.set(o, 'ui_selected', !o.ui_selected);
-		},
-
-		toggleAll() {
-			this.set('selectedAll', this.get('selectedAll'));
-			this.objects.forEach((o) => {
-				Ember.set(o, 'ui_selected', !o.ui_selected);
-			});	
-		},
-
-		deleteSelected() {
-			this.get('viewObjects').filterBy('ui_selected', true).forEach((o) => {
-				this.sendAction('delete', o.pathspec);
-				this.clearSelection();
-			});		
-		},
-
-		toggleRename(o) {
-			this.set('newObjectName', this.get('helpers').basename(o.pathspec));
-			Ember.set(o, 'ui_rename_input_visible', !o.ui_rename_input_visible);
-		},
-
-		openShareDialog(o) {
-			Ember.$(".ui.modal").modal("show");
-		}
-
-
-	},
-	
 	didInsertElement() {
 		this.$(".x-file--input").css("display", "none"); // to limit the width of the menu
 	},
@@ -238,5 +211,5 @@ export default Ember.Component.extend({
 			let popup = Ember.$(`[data-clawio-pathspec='${o.pathspec}'] .clawio-modtime  small`);
 			popup.popup();	
 		});
-	}
+	},
 });

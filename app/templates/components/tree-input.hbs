@@ -1,0 +1,11 @@
+{{#if loading}}
+<div class="ui left icon input disabled loading fluid">
+  <input type="text" value="Creating {{treeName}}" />
+  <i class="ui yellow folder icon"></i>
+</div>
+{{else}}
+<div class="ui left icon input fluid">
+  {{input type="text" placeholder="New tree" focus-out="hide" value=treeName key-up="create"}}
+  <i class="ui yellow folder icon"></i>
+</div>
+{{/if}}

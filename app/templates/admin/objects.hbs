@@ -1,0 +1,32 @@
+<div class="ui internally celled grid">
+  <div class="row">
+    <div class="three wide column">
+	<div class="ui vertical blue menu fluid secondary">
+	  {{#link-to "admin.objects.list-home" class="item blue"}}
+	    <i class="ui icon blue cubes"></i>
+	    My objects
+          {{/link-to}}
+          <a href="" class="item blue">
+	    <i class="ui icon blue linkify"></i>
+	    My public links
+          </a>
+          <a href="" class="item blue">
+	    <i class="ui icon blue share"></i>
+	    My personal shares
+          </a>
+          <a href="" class="item blue">
+	    <i class="ui icon share blue alternate"></i>
+	    Shared with me 
+          </a>
+          {{outlet "sidebar-links"}}
+	</div>
+
+        <div class="row">
+        {{outlet "sidebar-content"}}
+        </div>
+    </div>
+    <div class="thirteen wide column">
+    {{outlet}}
+    </div>
+  </div>
+</div>

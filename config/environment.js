@@ -45,19 +45,21 @@ module.exports = function(environment) {
 		authBaseUrl: "/api/v1/authentication/",
 		metaDataBaseUrl: "/api/v1/metadata/",
 		dataBaseUrl: "/api/v1/data/",
+		linkBaseUrl: "/api/v1/link/"
 	  };
   } else {
 	  ENV['apis'] = {
 		authBaseUrl: "http://localhost:1502/api/v1/authentication/",
 		metaDataBaseUrl: "http://localhost:1502/api/v1/metadata/",
 		dataBaseUrl: "http://localhost:1502/api/v1/data/",
+		linkBaseUrl: "http://localhost:1502/api/v1/link/"
 	  };
   }
 
   ENV['ember-simple-auth'] = {
       authorizer: 'authorizer:token',
-      routeAfterAuthentication: 'admin.objects-list-home',
-      routeIfAlreadyAuthenticated: 'admin.objects-list-home'
+      routeAfterAuthentication: 'admin.objects.list-home',
+      routeIfAlreadyAuthenticated: 'admin.objects.list-home'
   };
   ENV['ember-simple-auth-token'] = {
 	  serverTokenEndpoint: ENV['apis'].authBaseUrl+'token',

@@ -1,0 +1,11 @@
+{{#if loading}}
+<div class="ui left icon input disabled loading fluid">
+  <input type="text" value="Creating {{blobName}}" />
+  <i class="ui blue cube icon"></i>
+</div>
+{{else}}
+<div class="ui left icon input fluid">
+  {{input type="text" placeholder="New blob" focus-out="hide" value=blobName key-up="create"}}
+  <i class="ui blue cube icon"></i>
+</div>
+{{/if}}

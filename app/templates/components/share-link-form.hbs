@@ -1,0 +1,16 @@
+<form {{action "create" on="submit"}} class="ui form">
+	<div class="inline field">
+	      {{input type="checkbox" checked=passwordEnabled}}
+	      <label>Password protection</label>
+	</div>
+	{{#if passwordEnabled}}
+		<div class="field">
+		  <div class="ui left icon input required">
+		    <i class="red lock icon"></i>
+		    {{input placeholder="Password" name="password" type="password" value=password}}
+		  </div>
+		</div>
+	{{/if}}
+
+	<button class="ui button primary tiny " type="submit">Create public link</button>
+</form>
