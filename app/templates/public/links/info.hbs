@@ -1,0 +1,16 @@
+<div class="clawio-full-centered">
+	<div class="ui inverted dimmer {{if loading 'active'}}">
+		<div class="ui loader active"/>
+	</div>
+	<div class="ui centered page grid">
+		{{#if model}}
+			{{#if model.protected}}
+				{{share-link-protected-form validate="validate" loading=model.validating error=model.error}}
+			{{else}}
+				Link is NOT password protected
+			{{/if}}
+		{{else}}
+		<div class="ui red label">The link you are trying to access has been removed or does not exist</div>
+		{{/if}}
+	</div>
+</div>

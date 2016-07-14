@@ -4,6 +4,43 @@ import ENV from 'webui/config/environment';
 export default Ember.Service.extend({
 	session: Ember.inject.service('session'),
 
+	info(token, secret) {
+		let params = {};
+		params['secret']= secret;
+		const query = Ember.$.param(params);
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+			Ember.$.ajax({
+			    url: ENV.apis.linkBaseUrl+"info/"+token+ "?"+ query,
+			    type: "GET",
+			    dataType: "json"
+			}).done(function(response) {
+				resolve(response);
+			}).fail((error) => {
+				reject(error);	
+			});
+	       });
+	},
+
+	isProtected(token) {
+		let self = this;
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+		  self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
+		  const headers = {};
+		  headers[headerName] = headerValue;
+			Ember.$.ajax({
+			    headers: headers,
+			    url: ENV.apis.linkBaseUrl+"isprotected/"+token,
+			    type: "GET",
+			    dataType: "json"
+			}).done(function(response) {
+				resolve(response);
+			}).fail((error) => {
+				reject(error);	
+			});
+		});
+	       });
+	},
+
 	list() {
 		let self = this;
 		return new Ember.RSVP.Promise(function(resolve, reject) {

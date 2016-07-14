@@ -16,6 +16,12 @@ Router.map(function() {
       this.route('links');
     });
   });
+
+  this.route('public', function() {
+    this.route('links', function() {
+      this.route('info', {path: '/info/:token'});
+    });
+  });
 });
 
 export default Router;

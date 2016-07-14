@@ -1,0 +1,11 @@
+<form {{action "validate" on="submit"}} class="ui form {{if loading 'loading'}}">
+        <div class="ui error message red label mini"/>
+	<div class="field">
+	    <label>This public link is protected with a secret</label>
+	  <div class="ui left icon input required">
+	    <i class="red lock icon"></i>
+	    {{input placeholder="Secret" name="secret" type="password" value=secret}}
+	  </div>
+	</div>
+	<button class="ui button inverted blue tiny" type="submit">Access</button>
+</form>

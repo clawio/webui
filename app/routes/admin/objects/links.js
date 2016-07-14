@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
 	link: Ember.inject.service('link'),
+	data: Ember.inject.service('data'),
 	notify: Ember.inject.service('notify'),
 
 	model() {
@@ -30,7 +31,8 @@ export default Ember.Route.extend({
 			if (type === 'tree' ) {
 				this.transitionTo('admin.objects.list-nohome', pathspec);
 			} else {
-				this.transitionTo('admin.objects.download', pathspec);
+				const downloadUrl = this.get('data').download(pathspec);	
+				window.open(downloadUrl);
 			}
 		},
 	}

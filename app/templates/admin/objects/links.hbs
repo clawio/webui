@@ -29,7 +29,7 @@
 		</i>
 	      </td>
 	      <td {{action "default" link.oinfo.type link.oinfo.pathspec}} class="left aligned"><a href="">{{link.oinfo.pathspec}}</a></td>
-	      <td class="left aligned"><a href=""><i class="ui icon external"></i></a></td>
+	      <td class="left aligned">{{#link-to "public.links.info" link.token target="_blank"}}<i class="ui icon external"></i>{{/link-to}}</td>
 	      <td class="right aligned"><i class="ui icon large {{if link.secret 'green lock' 'red unlock'}}"></i></td>
 	      <td class="right aligned"><small>{{date-string link.expires}}</small></td>
 	      <td class="right aligned">
