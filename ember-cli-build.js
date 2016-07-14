@@ -22,6 +22,7 @@ module.exports = function(defaults) {
 
   app.import("./bower_components/semantic-ui/dist/semantic.min.css");
   app.import("./bower_components/semantic-ui/dist/semantic.min.js");
+  app.import("./vendor/calendar.min.js");
 
   return app.toTree();
 };

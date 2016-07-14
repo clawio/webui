@@ -1,0 +1,46 @@
+{{#unless model}}
+<div class="ui hidden divider"/>
+<div class="ui page grid centered">
+<small>
+<p>
+<i class="ui huge icons"><i class="ui blue world icon disabled"></i><i class="ui corner blue disabled linkify icon"></i></i>
+</p>
+<p>No public links</p>
+<p>Objects you share by link will show up here</p>
+</small>
+</div>
+{{else}}
+<table class="ui very basic very compacted green table selectable">
+  <thead>
+    <tr>
+      <th class="left aligned one wide"></th>
+      <th class="left aligned ten wide">Object location</th>
+      <th class="left aligned one wide"></th>
+      <th class="right aligned one wide">Protected</th>
+      <th class="right aligned two wide">Expires</th>
+      <th class="right aligned one wide"></th>
+    </tr>
+  </thead>
+  <tbody>
+	{{#each model as |link|}}
+	    <tr class="{{if link.ui_unlinking "disabled error"}}">
+	      <td>
+		<i {{action "default" link.oinfo.type link.oinfo.pathspec}} class="ui link large {{mime link.oinfo.type link.oinfo.mime_type}} icon">
+		</i>
+	      </td>
+	      <td {{action "default" link.oinfo.type link.oinfo.pathspec}} class="left aligned"><a href="">{{link.oinfo.pathspec}}</a></td>
+	      <td class="left aligned"><a href=""><i class="ui icon external"></i></a></td>
+	      <td class="right aligned"><i class="ui icon large {{if link.secret 'green lock' 'red unlock'}}"></i></td>
+	      <td class="right aligned"><small>{{date-string link.expires}}</small></td>
+	      <td class="right aligned">
+	      {{#if link.ui_unlinking}}
+		<i class="ui red icon circle notched loading small"></i>
+	      {{else}}
+		<i {{action "unlink" link.token}} class="ui red icon unlinkify link"></i>
+	      {{/if}}
+	      </td>
+	    </tr>
+	{{/each}}
+  </tbody>
+</table>
+{{/unless}}

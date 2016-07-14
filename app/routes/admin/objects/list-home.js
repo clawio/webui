@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Route.extend({
 	metaData: Ember.inject.service('metadata'),
 	data: Ember.inject.service('data'),
+	link: Ember.inject.service('link'),
 	notify: Ember.inject.service('notify'),
 
 	model(params) {
@@ -27,6 +28,9 @@ export default Ember.Route.extend({
 			treeInputVisible: false,
 			treeInputDisabled: false,
 			treeInputLoading: false,
+
+			shareSidebarVisible: false,
+			shareSidebarLoading: false
 		});
 	},
 	
@@ -186,13 +190,45 @@ export default Ember.Route.extend({
 			window.open(downloadUrl);
 		},
 
-		// send user to share route
-		share(pathspec) {
-		        pathspec = pathspec.replace(/^\/|\/$/g, '');
-			this.transitionTo('admin.objects.share', pathspec);
-		}
-	},
 
+		share(o) {
+			let model = this.modelFor(this.routeName);
+			Ember.set(model,'shareComponentVisible', true);
+			Ember.set(model,'shareComponentLoading', true);
+			this.get('link').find(o)
+			.then((link) => {
+				Ember.set(model,'shareLink', link);
+			})	
+			.catch(() => {
+				Ember.set(model,'shareLink', null);
+			})
+			.finally(() => {
+				Ember.set(model,'shareComponentLoading', false);
+			})
+		},
+		createShareLink(o, password, epoch) {
+			let model = this.modelFor(this.routeName);
+			Ember.set(model,'shareComponentLoading', true);
+			this.get('link').create(o, password, epoch)
+			.then((link) => {
+				Ember.set(model,'shareLink', link);
+			})		
+			.finally(() => {
+				Ember.set(model,'shareComponentLoading', false);
+			})
+		},
+		deleteShareLink(token) {
+			let model = this.modelFor(this.routeName);
+			Ember.set(model,'shareComponentLoading', true);
+			this.get('link').delete(token)
+			.finally(() => {
+				Ember.set(model,'shareLink', null);
+				Ember.set(model,'shareComponentLoading', false);
+			})
+		}
+
+
+	},
 	setFilesizeRatio(ratio) {
 		Ember.set(this.modelFor(this.routeName), 'uploadFilesizeRatio', ratio);
 	},

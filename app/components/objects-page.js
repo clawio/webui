@@ -18,6 +18,8 @@ export default Ember.Component.extend({
 
 	batchMode: false,
 	countSelectedObjects: 0,
+
+	shareLink: null,
 	
 	actions: {
 		processRename(data, event) {
@@ -111,10 +113,16 @@ export default Ember.Component.extend({
 		},
 
 		share(o) {
-			this.sendAction('share', o.pathspec);
+			this.set('shareObject', o);
+			this.sendAction('share', o);
+		},
+
+		createShareLink(password, epoch) {
+			this.sendAction('createShareLink', this.get('shareObject'), password, epoch);
+		},
+		deleteShareLink(token) {
+			this.sendAction('deleteShareLink', token);
 		}
-
-
 	},
 	
 	initializeViewObjects: function() {

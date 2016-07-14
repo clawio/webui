@@ -11,6 +11,20 @@
 		  </div>
 		</div>
 	{{/if}}
+	<div class="inline field">
+	      {{input type="checkbox" checked=expireEnabled}}
+	      <label>Set expire date</label>
+	</div>
+	{{#if expireEnabled}}
+		<div class="field">
+	  <div class="ui calendar" id="calendar">
+	    <div class="ui input left icon">
+	      <i class="calendar icon"></i>
+	      {{input readonly type="text" placeholder="Date" value=date}}
+	    </div>
+	  </div>
+	  </div>
+	{{/if}}
 
-	<button class="ui button primary tiny " type="submit">Create public link</button>
+	<button class="ui button primary tiny" type="submit">Create public link</button>
 </form>

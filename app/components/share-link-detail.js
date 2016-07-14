@@ -5,7 +5,7 @@ export default Ember.Component.extend({
 
 	actions: {
 		unlink()  {
-			alert('unlink');	
+			this.sendAction('unlink', this.get('link').token);
 		}
 	}
 });

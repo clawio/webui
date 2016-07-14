@@ -66,7 +66,7 @@
 		{{#if batchMode }}
 		{{input type="checkbox" checked=object.ui_selected}}
 		{{else}}
-		<div class="ui icon top left pointing dropdown object-dropdown">
+		<div class="ui icon left pointing dropdown object-dropdown">
 		  <i class="blue ellipsis vertical icon"></i>
 		  <div class="ui menu">
 		    <div {{action "examine" object.pathspec}} class="item"><i class="ui eye icon"></i>Examine</div>
@@ -128,5 +128,48 @@
     </div>
     <div class="one column row"></div>
   </div>
+</div>
+{{/if}}
+
+{{#if shareComponentVisible}}
+<div class="ui right ui sidebar segment visible very wide">
+
+{{#if shareComponentLoading}}
+<div class="ui dimmer inverted active" >
+<div class="ui text loader active">Loading share info</div>
+</div>
+{{/if}}
+  <div class="ui center aligned page grid">
+      <div class="ui row">
+	<div class="ui column">
+	<small><b>{{ basename shareObject.pathspec}}</b></small>
+        </div>
+      </div>
+      <div class="ui row">
+        <div class="ui column">
+	<div class="ui secondary pointing menu">
+	  <a class="active item">
+	    Link
+	  </a>
+	  <a class="item">
+	    User
+	  </a>
+	  <a class="item">
+	    Group
+	  </a>
+	</div>
+	</div>
+  </div>
+  </div>
+  <div class="ui hidden divider"/>
+      <div class="ui row">
+       <div class="ui column">
+       {{#if shareLink}}
+       {{share-link-detail link=shareLink unlink="deleteShareLink"}}
+       {{else}}
+       {{share-link-form create="createShareLink"}}
+       {{/if}}
+       </div>
+      </div>
 </div>
 {{/if}}

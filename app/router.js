@@ -13,6 +13,7 @@ Router.map(function() {
       this.route('list-home', {path: '/list/'});
       this.route('list-nohome', {path: '/list/*pathspec'});
       this.route('examine', {path: '/examine/*pathspec'});
+      this.route('links');
     });
   });
 });
