@@ -8,11 +8,7 @@ export default Ember.Route.extend({
 		return new Ember.RSVP.Promise((resolve, reject) => {
 			this.get('link').isProtected(params.token)
 			.then((data) => {
-				if (data.isProtected) {
-					resolve(data)
-				} else {
-					// trigger
-				}
+				resolve(data)
 			})
 			.catch((error) => {
 				if (error.status === 404) {
@@ -24,13 +20,23 @@ export default Ember.Route.extend({
 	       	});
 	},
 
+	afterModel() {
+		let model = this.modelFor(this.routeName);
+		if (model && model.protected === false) { // link is not protected
+			this.get('link').saveLinkCredentials(this.get('params').token, '');
+			this.transitionTo('public.links.examine', this.get('params').token);
+			return;
+		}
+	},
+
 	actions: {
 		validate(secret) {
 			let model = this.modelFor(this.routeName);
 			Ember.set(model, 'validating', true);
 			this.get('link').info(this.get('params').token, secret)
 			.then((link) => {
-				Ember.set(model, 'link', link);
+				this.get('link').saveLinkCredentials(this.get('params').token, secret);
+				this.transitionTo('public.links.examine', this.get('params').token);
 			})
 			.catch(() => {
 				Ember.set(model, 'error', "secret is invalid");

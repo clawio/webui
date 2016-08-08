@@ -3,6 +3,17 @@ import ENV from 'webui/config/environment';
 
 export default Ember.Service.extend({
 	session: Ember.inject.service('session'),
+	storage: {},
+
+	saveLinkCredentials(token, secret) {
+		this.get('storage')[token] = secret;
+		console.log(this.get('storage'));
+	},
+
+	getLinkCredentials(token) {
+		console.log(this.get('storage'));
+		return this.get('storage')[token];
+	},
 
 	info(token, secret) {
 		let params = {};
@@ -53,7 +64,7 @@ export default Ember.Service.extend({
 			    type: "GET",
 			    dataType: "json"
 			}).done(function(response) {
-				resolve(response);
+				resolve(response.filter((e) => {return e != null}));
 			}).fail((error) => {
 				reject(error);	
 			});

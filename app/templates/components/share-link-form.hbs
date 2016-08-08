@@ -5,7 +5,7 @@
 	</div>
 	{{#if passwordEnabled}}
 		<div class="field">
-		  <div class="ui left icon input required">
+		  <div class="ui left icon input required mini">
 		    <i class="red lock icon"></i>
 		    {{input placeholder="Password" name="password" type="password" value=password}}
 		  </div>
@@ -18,7 +18,7 @@
 	{{#if expireEnabled}}
 		<div class="field">
 	  <div class="ui calendar" id="calendar">
-	    <div class="ui input left icon">
+	    <div class="ui input left icon mini">
 	      <i class="calendar icon"></i>
 	      {{input readonly type="text" placeholder="Date" value=date}}
 	    </div>
@@ -26,5 +26,5 @@
 	  </div>
 	{{/if}}
 
-	<button class="ui button primary tiny" type="submit">Create public link</button>
+	<button class="ui button blue inverted mini" type="submit">Create</button>
 </form>

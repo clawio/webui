@@ -20,6 +20,7 @@ Router.map(function() {
   this.route('public', function() {
     this.route('links', function() {
       this.route('info', {path: '/info/:token'});
+      this.route('examine', {path: '/examine/:token'});
     });
   });
 });

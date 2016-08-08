@@ -1,14 +1,15 @@
 <form class="ui form">
 <div class="ui field">
-<div class="ui action input fluid">
+<div class="ui action input fluid mini">
   <input readonly type="text" value="{{link.token}}">
-  <button {{action "copy"}} class="ui icon button basic">
-    <i class="blue copy icon"></i>
-  </button>
+  {{#link-to "public.links.info" link.token class="ui button mini basic" target="_blank"}}
+   <i class="ui icon external"/> Access
+  {{/link-to}}
 </div>
 </div>
 <div class="ui field">
-<button {{action "unlink"}} class="ui button negative mini">
- <i class="ui icon unlinkify"/> Unlink
-</button> </div>
+	<button {{action "unlink"}} class="ui button red inverted mini">
+	 <i class="ui icon unlinkify"/> Unlink
+	</button>
+</div>
 </form>
