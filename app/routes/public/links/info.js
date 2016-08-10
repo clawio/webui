@@ -12,20 +12,19 @@ export default Ember.Route.extend({
 			})
 			.catch((error) => {
 				if (error.status === 404) {
-					resolve(null);	
+					resolve(null);
 				} else {
 					reject(error);
 				}
-			}) 
-	       	});
+			})
+    });
 	},
 
 	afterModel() {
 		let model = this.modelFor(this.routeName);
-		if (model && model.protected === false) { // link is not protected
+		if (model && model.protected === false) {
 			this.get('link').saveLinkCredentials(this.get('params').token, '');
 			this.transitionTo('public.links.examine', this.get('params').token);
-			return;
 		}
 	},
 
@@ -40,7 +39,7 @@ export default Ember.Route.extend({
 			})
 			.catch(() => {
 				Ember.set(model, 'error', "secret is invalid");
-			}) 
+			})
 			.finally(() => {
 				Ember.set(model, 'validating', false);
 			})

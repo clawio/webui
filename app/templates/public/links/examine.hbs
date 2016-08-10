@@ -1,3 +1,39 @@
-{{model.token}}
-{{model.owner.username}}
-{{outlet}}
+<div class="ui secondary menu inverted blue" style="border-bottom: solid 1px #D4D4D5;">
+  {{#link-to "admin.index" class="item"}}
+      <img src="assets/images/logo-white.svg"/>
+  {{/link-to}}
+    <p class="item">ClawIO</p>
+</div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui centered page grid">
+  {{#if model}}
+      <div class="row">
+          <div class="column">
+              <div class="field">
+                  <p><i class="ui icon huge file text blue"></i></p>
+              </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="column">
+              <div class="ui button mini">
+                  <i class="ui icon download"></i>
+                  Download {{basename model.oinfo.pathspec}} ({{human-size model.oinfo.type model.oinfo.size}})
+              </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="eight wide column">
+              <div class="ui action input fluid mini">
+                  <input readonly="" type="text" value="/public/links/info/7cd8f5fe-ed3f-4c80-bd90-2f84836e2ca7">
+                  <a id="ember711" href="/public/links/info/7cd8f5fe-ed3f-4c80-bd90-2f84836e2ca7" target="_blank"
+                     class="ui button mini basic ember-view"> <i class="ui icon external"></i> Direct link
+                  </a>
+              </div>
+          </div>
+      </div>
+  {{else}}
+      <div class="ui red label">The link you are trying to access has been removed or does not exist</div>
+  {{/if}}
+</div>

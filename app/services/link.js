@@ -7,13 +7,18 @@ export default Ember.Service.extend({
 
 	saveLinkCredentials(token, secret) {
 		this.get('storage')[token] = secret;
-		console.log(this.get('storage'));
 	},
 
 	getLinkCredentials(token) {
-		console.log(this.get('storage'));
 		return this.get('storage')[token];
 	},
+
+  getDownloadUrl(token, secret, path) {
+    let params = {};
+    params['secret']= secret;
+    const query = Ember.$.param(params);
+    return ENV.apis.linkBaseUrl+"download/"+token+"/"+path+"?"+query;
+  },
 
 	info(token, secret) {
 		let params = {};
@@ -27,7 +32,7 @@ export default Ember.Service.extend({
 			}).done(function(response) {
 				resolve(response);
 			}).fail((error) => {
-				reject(error);	
+				reject(error);
 			});
 	       });
 	},
@@ -46,7 +51,7 @@ export default Ember.Service.extend({
 			}).done(function(response) {
 				resolve(response);
 			}).fail((error) => {
-				reject(error);	
+				reject(error);
 			});
 		});
 	       });
@@ -66,7 +71,7 @@ export default Ember.Service.extend({
 			}).done(function(response) {
 				resolve(response.filter((e) => {return e != null}));
 			}).fail((error) => {
-				reject(error);	
+				reject(error);
 			});
 		});
 	       });
@@ -91,7 +96,7 @@ export default Ember.Service.extend({
 			}).done(function(response) {
 				resolve(response);
 			}).fail((error) => {
-				reject(error);	
+				reject(error);
 			});
 		});
 	       });
@@ -112,7 +117,7 @@ export default Ember.Service.extend({
 			}).done(function(response) {
 				resolve(response);
 			}).fail((error) => {
-				reject(error);	
+				reject(error);
 			});
 		});
 	       });
@@ -131,7 +136,7 @@ export default Ember.Service.extend({
 			}).done(function() {
 				resolve();
 			}).fail((error) => {
-				reject(error);	
+				reject(error);
 			});
 		});
 	       });
