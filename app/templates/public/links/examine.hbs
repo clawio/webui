@@ -17,7 +17,7 @@
       </div>
       <div class="row">
           <div class="column">
-              <div class="ui button mini">
+              <div class="ui button mini" {{action "download" ""}}>
                   <i class="ui icon download"></i>
                   Download {{basename model.oinfo.pathspec}} ({{human-size model.oinfo.type model.oinfo.size}})
               </div>
@@ -27,7 +27,7 @@
           <div class="eight wide column">
               <div class="ui action input fluid mini">
                   <input readonly="" type="text" value="/public/links/info/7cd8f5fe-ed3f-4c80-bd90-2f84836e2ca7">
-                  <a id="ember711" href="/public/links/info/7cd8f5fe-ed3f-4c80-bd90-2f84836e2ca7" target="_blank"
+                  <a href="{{model.directDownloadLink}}" target="_blank"
                      class="ui button mini basic ember-view"> <i class="ui icon external"></i> Direct link
                   </a>
               </div>
