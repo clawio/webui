@@ -11,15 +11,16 @@ export default Ember.Route.extend({
 
 	afterModel(model) {
 		if (model.oinfo.type === 'blob') {
+      let secret = this.get('link').getLinkCredentials(this.get('params').token);
+      let downloadUrl = this.get('link').getDownloadUrl(this.get('params').token, secret, "");
+		  Ember.set(model, 'downloadUrl', downloadUrl);
 		} else {
-		// if object is blob we trigger the download, else we list contents
+		  this.transitionTo('public.links.list-home', this.get('params').token);
 		}
 	},
 
 	actions: {
-	  download(path) {
-      let secret = this.get('link').getLinkCredentials(this.get('params').token);
-      let downloadUrl = this.get('link').getDownloadUrl(this.get('params').token, secret, path);
+	  download(downloadUrl) {
       window.open(downloadUrl);
     },
 

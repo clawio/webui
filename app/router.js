@@ -21,6 +21,8 @@ Router.map(function() {
     this.route('links', function() {
       this.route('info', {path: '/info/:token'});
       this.route('examine', {path: '/examine/:token'});
+      this.route('list-home', {path: '/list/:token'});
+      this.route('list-nohome', {path: '/list/:token/*pathpsec'});
     });
   });
 });

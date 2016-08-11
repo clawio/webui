@@ -20,15 +20,20 @@ export default Ember.Route.extend({
     });
 	},
 
-	afterModel() {
-		let model = this.modelFor(this.routeName);
+	afterModel(model) {
 		if (model && model.protected === false) {
 			this.get('link').saveLinkCredentials(this.get('params').token, '');
 			this.transitionTo('public.links.examine', this.get('params').token);
 		}
 	},
 
+  error(cause) {
+    console.log(cause);
+  },
 	actions: {
+	  error(cause) {
+	   console.log(cause);
+    },
 		validate(secret) {
 			let model = this.modelFor(this.routeName);
 			Ember.set(model, 'validating', true);

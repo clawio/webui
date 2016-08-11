@@ -1,0 +1,92 @@
+<table class="very basic ui blue table fixed selectable collapsing very compacted" style="height: 75vh; display:block; overflow-y: auto">
+    <thead>
+    <tr>
+        <th class="left aligned one wide no-sort" style="overflow:visible;">
+            <div class="ui icon left pointing dropdown button basic">
+                <i class="plus blue icon"></i>
+                <div class="ui menu">
+                    <div class="item {{if uploadTotal 'disabled'}}">
+                      {{#x-file-input name="files" action="didSelectFiles" alt="Choose a file" multiple=true}}
+                          <b><i class="ui upload blue icon"></i>Upload objects</b>
+                      {{/x-file-input}}
+                    </div>
+                    <div {{action "showBlobInput"}} class="item {{if newBlobButtonDisabled 'disabled'}}">
+                        <div><b><i class="ui blue cube icon"></i>New object</b></div>
+                    </div>
+                    <div {{action "showTreeInput"}} class="item {{if newTreeButtonDisabled 'disabled'}}">
+                        <div><b><i class="ui yellow folder open icon"></i>New tree</b></div>
+                    </div>
+                    <div {{action "toggleBatchMode"}} class="item {{unless viewObjects.length 'disabled'}} ">
+                        <div><b><i class="ui green unoderered list icon"></i> Toggle batch mode</b></div>
+                    </div>
+                </div>
+            </div>
+        </th>
+        <th class="left aligned one wide no-sort"></th>
+        <th class="left aligned sorted ascending eleven wide">Name</th>
+        <th class="right aligned one wide">Size</th>
+        <th class="right aligned two wide">Modified</th>
+        <th class="rigth aligned one wide"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each model as |object|}}
+        <tr
+                class="{{if object.ui_deleting "disabled error"}}{{if object.ui_highlight "warning"}}{{if object.ui_selected "warning"}}{{if object.ui_renaming 'disabled warning'}}"
+                data-clawio-pathspec={{object.pathspec}}
+        >
+            <td class="left aligned" style="overflow:visible;">
+              {{#if batchMode }}
+                {{input type="checkbox" checked=object.ui_selected}}
+              {{else}}
+                  <div class="ui icon left pointing dropdown object-dropdown">
+                      <i class="blue ellipsis vertical icon"></i>
+                      <div class="ui menu">
+                          <div {{action "examine" object.pathspec}} class="item"><i class="ui eye icon"></i>Examine</div>
+                          <div {{action "toggleRename" object}} class="item"><i class="ui edit icon"></i>Rename</div>
+                          <div {{action "share" object}} class="item"><i class="ui share alternate icon"></i>Share</div>
+                      </div>
+                  </div>
+              {{/if}}
+            </td>
+            <td class="left aligned">
+                <a {{action "default" object.type object.pathspec}} href="">
+                    <i class="ui large {{mime object.type object.mime_type}} icon"></i>
+                </a>
+            </td>
+          {{#if object.ui_rename_input_visible}}
+              <td>
+                  <div class="ui small input fluid">
+                    {{input type="text" value=newObjectName class="rename-input" key-up="processRename" focus-out="hideRenameInput"}}
+                  </div>
+              </td>
+          {{else}}
+            {{#if object.ui_renaming}}
+                <td>
+                    <div class="ui left icon input disabled loading small fluid">
+                        <input type="text" value="Renaming object" />
+                        <i class="ui blue cube icon"></i>
+                    </div>
+                </td>
+            {{else}}
+                <td {{action "default" object.type object.pathspec}} class="left aligned"><a href="">{{basename object.pathspec}}</a></td>
+            {{/if}}
+          {{/if}}
+            <td class="right aligned"><small>{{human-size object.type object.size 1024}}</small></td>
+            <td class="right aligned clawio-modtime">
+                <small data-title={{o.pathspec}} data-content={{human-date object.mtime}} data-variation="mini">{{time-since object.mtime}}</small>
+            </td>
+            <td class="right aligned">
+              {{#if object.ui_deleting}}
+                  <i class="ui red icon circle notched loading small"></i>
+              {{else}}
+                {{#unless batchMode}}
+                    <a {{action "delete" object.pathspec}} href=""><i class="ui red icon trash"></i></a>
+                {{/unless}}
+              {{/if}}
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
+{{outlet}}

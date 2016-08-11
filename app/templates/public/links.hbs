@@ -1,1 +1,11 @@
-{{outlet}}
+<div class="ui secondary menu" style="border-bottom: solid 1px #D4D4D5;">
+  {{#link-to "admin.index" class="item"}}
+      <img src="assets/images/logo.svg"/>
+  {{/link-to}}
+    <p class="item">ClawIO</p>
+</div>
+<div class="ui hidden divider"></div>
+<div class="ui hidden divider"></div>
+<div class="ui centered page grid">
+  {{outlet}}
+</div>
