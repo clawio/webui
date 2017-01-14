@@ -1,7 +1,7 @@
-{{#if model.blobInputVisible }}
-{{blob-input create="createBlob" hide="hideBlobInput" loading=model.blobInputLoading}}
+{{#if model.fileInputVisible }}
+{{file-input create="createBlob" hide="hideBlobInput" loading=model.fileInputLoading}}
 {{/if}}
 
-{{#if model.treeInputVisible }}
-{{tree-input create="createTree" hide="hideTreeInput" loading=model.treeInputLoading}}
+{{#if model.folderInputVisible }}
+{{folder-input create="createFolder" hide="hideFolderInput" loading=model.folderInputLoading}}
 {{/if}}

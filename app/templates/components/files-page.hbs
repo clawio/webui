@@ -17,11 +17,11 @@
 	    <div {{action "showBlobInput"}} class="item {{if newBlobButtonDisabled 'disabled'}}">
 		<div><b><i class="ui blue cube icon"></i>New file</b></div>
 	    </div>
-	    <div {{action "showTreeInput"}} class="item {{if newTreeButtonDisabled 'disabled'}}">
-		<div><b><i class="ui yellow folder open icon"></i>New tree</b></div>
+	    <div {{action "showFolderInput"}} class="item {{if newFolderButtonDisabled 'disabled'}}">
+		<div><b><i class="ui yellow folder open icon"></i>New folder</b></div>
 	    </div>
-	    <div {{action "toggleBatchMode"}} class="item {{unless viewObjects.length 'disabled'}} ">
-		<div><b><i class="ui green unoderered list icon"></i> Toggle batch mode</b></div>
+	    <div {{action "toggleBatchMode"}} class="item {{unless viewFiles.length 'disabled'}} ">
+		<div><b><i class="ui green unordered list icon"></i> Toggle batch mode</b></div>
 	    </div>
 	  </div>
 	</div>
@@ -30,18 +30,18 @@
       <th class="left aligned sorted ascending eleven wide">Name</th>
       <th class="right aligned one wide">Size</th>
       <th class="right aligned two wide">Modified</th>
-      <th class="rigth aligned one wide"></th>
+      <th class="right aligned one wide"></th>
     </tr>
     {{#if batchMode}}
-    {{#if viewObjects.length}} 
+    {{#if viewFiles.length}}
     <tr>
       <th class="left aligned one wide">
 	  {{input type="checkbox" checked=selectedAll class="checkbox select-all"}}
       </th>
       <th class="left aligned one wide"></th>
       <th class="left aligned sorted ascending eleven wide">
-	{{#if selectedObjects}}
-		<label class="ui label">{{selectedObjects}} files selected</label>
+	{{#if selectedFiles}}
+		<label class="ui label">{{selectedFiles}} files selected</label>
 	<button {{action "deleteSelected"}} class="ui compact circular labeled icon red tiny button right aligned">
 	  <i class="trash icon"></i>
 	  Delete selected
@@ -50,15 +50,15 @@
       </th>
       <th class="right aligned one wide"></th>
       <th class="right aligned one wide"></th>
-      <th class="rigth aligned one wide">
+      <th class="right aligned one wide">
       </th>
     </tr>
     {{/if}}
     {{/if}}
   </thead>
   <tbody>
-	{{#each viewObjects as |file|}}
-	    <tr 
+	{{#each viewFiles as |file|}}
+	    <tr
 		class="{{if file.ui_deleting "disabled error"}}{{if file.ui_highlight "warning"}}{{if file.ui_selected "warning"}}{{if file.ui_renaming 'disabled warning'}}"
 		data-clawio-path={{file.path}}
 		>
@@ -77,14 +77,14 @@
 		{{/if}}
 	      </td>
 	      <td class="left aligned">
-		<a {{action "default" file.type file.path}} href="">
-			<i class="ui large {{mime file.type file.mime_type}} icon"></i>
+		<a {{action "default" file.folder file.path}} href="">
+			<i class="ui large {{mime file.folder file.path}} icon"></i>
 		</a>
 	      </td>
 	      {{#if file.ui_rename_input_visible}}
 		<td>
 		<div class="ui small input fluid">
-		  {{input type="text" value=newObjectName class="rename-input" key-up="processRename" focus-out="hideRenameInput"}}
+		  {{input type="text" value=newFileName class="rename-input" key-up="processRename" focus-out="hideRenameInput"}}
 		</div>
 		</td>
 	      {{else}}
@@ -96,12 +96,12 @@
 		</div>
 		</td>
 		{{else}}
-		<td {{action "default" file.type file.path}} class="left aligned"><a href="">{{basename file.path}}</a></td>
+		<td {{action "default" file.folder file.path}} class="left aligned"><a href="">{{basename file.path}}</a></td>
 		{{/if}}
 	      {{/if}}
-	      <td class="right aligned"><small>{{human-size file.type file.size 1024}}</small></td>
-	      <td class="right aligned clawio-modtime">
-			<small data-title={{o.path}} data-content={{human-date file.mtime}} data-variation="mini">{{time-since file.mtime}}</small>
+	      <td class="right aligned"><small>{{human-size file.folder file.size 1024}}</small></td>
+	      <td class="right aligned clawio-modified">
+			<small data-title={{o.path}} data-content={{human-date file.modified}} data-variation="mini">{{time-since file.modified}}</small>
 	      </td>
 	      <td class="right aligned">
 	      {{#if file.ui_deleting}}
@@ -142,7 +142,7 @@
   <div class="ui center aligned page grid">
       <div class="ui row">
 	<div class="ui column">
-	<small><b>{{ basename shareObject.path}}</b></small>
+	<small><b>{{ basename shareFile.path}}</b></small>
         </div>
       </div>
       <div class="ui row">

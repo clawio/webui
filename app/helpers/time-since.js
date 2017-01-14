@@ -1,8 +1,7 @@
 import Ember from 'ember';
 
 export function timeSince(params/*, hash*/) {
-	// data is given in nanoseconds so we need to convert it to ms 
-	let date = params[0] / 1000000;
+	let date = params[0] * 1000;
 
 	let seconds = Math.floor((new Date() - date) / 1000);
 	let interval = Math.floor(seconds / 31536000);

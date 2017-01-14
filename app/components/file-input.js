@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-	blobName: "",
+	fileName: "",
 	loading: false,
 
 	didRender() {
@@ -13,9 +13,9 @@ export default Ember.Component.extend({
 			this.sendAction('hide');	
 		},
 		create() {
-			let blobName = this.get('blobName');
-			if (event.keyCode === 13 && blobName)  { // enter key
-				this.sendAction('create', blobName);
+			let fileName = this.get('fileName');
+			if (event.keyCode === 13 && fileName)  { // enter key
+				this.sendAction('create', fileName);
 			} else if (event.keyCode === 27) { // escape key
 				this.sendAction('hide');
 			}

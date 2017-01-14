@@ -13,10 +13,10 @@
                     <div {{action "showBlobInput"}} class="item {{if newBlobButtonDisabled 'disabled'}}">
                         <div><b><i class="ui blue cube icon"></i>New file</b></div>
                     </div>
-                    <div {{action "showTreeInput"}} class="item {{if newTreeButtonDisabled 'disabled'}}">
-                        <div><b><i class="ui yellow folder open icon"></i>New tree</b></div>
+                    <div {{action "showFolderInput"}} class="item {{if newFolderButtonDisabled 'disabled'}}">
+                        <div><b><i class="ui yellow folder open icon"></i>New folder</b></div>
                     </div>
-                    <div {{action "toggleBatchMode"}} class="item {{unless viewObjects.length 'disabled'}} ">
+                    <div {{action "toggleBatchMode"}} class="item {{unless viewFiles.length 'disabled'}} ">
                         <div><b><i class="ui green unoderered list icon"></i> Toggle batch mode</b></div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
           {{#if file.ui_rename_input_visible}}
               <td>
                   <div class="ui small input fluid">
-                    {{input type="text" value=newObjectName class="rename-input" key-up="processRename" focus-out="hideRenameInput"}}
+                    {{input type="text" value=newFileName class="rename-input" key-up="processRename" focus-out="hideRenameInput"}}
                   </div>
               </td>
           {{else}}
@@ -73,8 +73,8 @@
             {{/if}}
           {{/if}}
             <td class="right aligned"><small>{{human-size file.type file.size 1024}}</small></td>
-            <td class="right aligned clawio-modtime">
-                <small data-title={{o.path}} data-content={{human-date file.mtime}} data-variation="mini">{{time-since file.mtime}}</small>
+            <td class="right aligned clawio-modified">
+                <small data-title={{o.path}} data-content={{human-date file.modified}} data-variation="mini">{{time-since file.modified}}</small>
             </td>
             <td class="right aligned">
               {{#if file.ui_deleting}}

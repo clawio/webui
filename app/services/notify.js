@@ -10,13 +10,13 @@ export default Ember.Service.extend({
 
 	error(text) {
 		let o = Ember.Object.create({color: "red",text:text, readed: false});
-		this.get('messages').pushObject(o);	
+		this.get('messages').pushObject(o);
 		this.readLater(o);
 	},
 
 	info(text) {
 		let o = Ember.Object.create({color: "blue",text: text, readed: false});
-		this.get('messages').pushObject(o);	
+		this.get('messages').pushObject(o);
 		this.readLater(o);
 	},
 

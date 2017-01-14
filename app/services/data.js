@@ -22,13 +22,12 @@ export default Ember.Service.extend({
   },
 
   upload(path, data, progressHandler) {
-    path = encodeURIComponent(path);
     let self = this;
     return new Ember.RSVP.Promise(function (resolve, reject) {
       self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
         const headers = {};
         headers[headerName] = headerValue;
-        headers['clawio-api-arg'] = {path: path}
+        headers['clawio-api-arg'] = JSON.stringify({path: path})
         Ember.$.ajax({
           xhr: function () {  // Custom XMLHttpRequest
             var myXhr = Ember.$.ajaxSettings.xhr();

@@ -28,7 +28,7 @@ export default Ember.Route.extend({
 		},
 
 		default(type, path) {
-			if (type === 'tree' ) {
+			if (type === 'folder' ) {
 				this.transitionTo('admin.files.list-nohome', path);
 			} else {
 				const downloadUrl = this.get('data').download(path);	

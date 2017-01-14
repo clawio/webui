@@ -1,12 +1,12 @@
 import Ember from 'ember';
-import ObjectsListHomeRoute from './list-home';
+import FilesListHomeRoute from './list-home';
 
-export default ObjectsListHomeRoute.extend({
+export default FilesListHomeRoute.extend({
 	notify: Ember.inject.service('notify'),
 
 	actions: {
 		error() {
-			this.get('notify').error("tree not found");
+			this.get('notify').error("folder not found");
 			this.transitionTo('admin.files.list-home');	
 		}
 	}

@@ -8,7 +8,7 @@ export default Ember.Route.extend({
 
 	model(params) {
 		return Ember.RSVP.hash({
-			currentPathspec: params.path || "",
+			currentFile: params.path || "",
 
 			files: this.get('metaData').list(params.path) || [],
 
@@ -21,13 +21,13 @@ export default Ember.Route.extend({
 
 			filterterm: "",
 
-			blobInputVisible: false,
-			blobInputDisabled: false,
-			blobInputLoading: false,
+			fileInputVisible: false,
+			fileInputDisabled: false,
+			fileInputLoading: false,
 
-			treeInputVisible: false,
-			treeInputDisabled: false,
-			treeInputLoading: false,
+			folderInputVisible: false,
+			folderInputDisabled: false,
+			folderInputLoading: false,
 
 			shareSidebarVisible: false,
 			shareSidebarLoading: false
@@ -49,20 +49,20 @@ export default Ember.Route.extend({
 
 	actions: {
 
-		// actions that handle the creation of blobs
+		// actions that handle the creation of files
 		showBlobInput() {
 			let model = this.modelFor(this.routeName);
-			Ember.set(model,'blobInputVisible', true);
+			Ember.set(model,'fileInputVisible', true);
 		},
 		hideBlobInput() {
 			let model = this.modelFor(this.routeName);
-			Ember.set(model,'blobInputVisible', false);
+			Ember.set(model,'fileInputVisible', false);
 		},
-		createBlob(blobName) {
+		createBlob(fileName) {
 			let model = this.modelFor(this.routeName);
-			Ember.set(model, 'blobInputLoading',true);
+			Ember.set(model, 'fileInputLoading',true);
 
-			let path = model.currentPathspec + "/" + blobName;
+			let path = model.currentFile + "/" + fileName;
 			path = path.replace(/^\/|\/$/g, '');
 
 			let uploadPromise = this.get('data').upload(path, new Uint8Array(0));
@@ -74,28 +74,28 @@ export default Ember.Route.extend({
 				this.get('notify').error(`"${path}" cannot be created`);
 			})
 			.finally(() => {
-				Ember.set(model, 'blobInputLoading', false);
-				Ember.set(model, 'blobInputVisible', false);
+				Ember.set(model, 'fileInputLoading', false);
+				Ember.set(model, 'fileInputVisible', false);
 			});
 		},
 
-		// actions that handle the creation of trees
-		showTreeInput() {
+		// actions that handle the creation of folders
+		showFolderInput() {
 			let model = this.modelFor(this.routeName);
-			Ember.set(model,'treeInputVisible', true);
+			Ember.set(model,'folderInputVisible', true);
 		},
-		hideTreeInput() {
+		hideFolderInput() {
 			let model = this.modelFor(this.routeName);
-			Ember.set(model,'treeInputVisible', false);
+			Ember.set(model,'folderInputVisible', false);
 		},
-		createTree(treeName) {
+		createFolder(folderName) {
 			let model = this.modelFor(this.routeName);
-			Ember.set(model, 'treeInputLoading',true);
+			Ember.set(model, 'folderInputLoading',true);
 
-			let path = model.currentPathspec + "/" + treeName;
+			let path = model.currentFile + "/" + folderName;
 			path = path.replace(/^\/|\/$/g, '');
 
-			let uploadPromise = this.get('metaData').createTree(path);
+			let uploadPromise = this.get('metaData').createFolder(path);
 			uploadPromise
 			.then(() => {
 				this.examineAfterCreation(path);
@@ -104,8 +104,8 @@ export default Ember.Route.extend({
 				this.get('notify').error(`"${path}" cannot be created`);
 			})
 			.finally(() => {
-				Ember.set(model, 'treeInputLoading', false);
-				Ember.set(model, 'treeInputVisible', false);
+				Ember.set(model, 'folderInputLoading', false);
+				Ember.set(model, 'folderInputVisible', false);
 			});
 		},
 
@@ -115,7 +115,7 @@ export default Ember.Route.extend({
 			Ember.set(model,'filterterm', filterterm);
 		},
 
-		//actions that handle the upload of blobs
+		//actions that handle the upload of files
 		upload(files) {
 			let numberOfFiles = files.length;
 
@@ -130,25 +130,25 @@ export default Ember.Route.extend({
 		},
 
 		// actions that handle the  renaming of files
-		renameObject(file, newName) {
+		renameFile(file, newName) {
 			let o = this.modelFor(this.routeName).files.findBy("path", file.path);
 			Ember.set(o, 'ui_renaming', true);
 
-			let targetPathspec = file.path.split("/");
+			let targetPath = file.path.split("/");
 			// remove last part to obtain dirname
-			targetPathspec.pop();
-			targetPathspec.push(newName);
-			targetPathspec = targetPathspec.join('/').replace(/^\/|\/$/g, '');
+			targetPath.pop();
+			targetPath.push(newName);
+			targetPath = targetPath.join('/').replace(/^\/|\/$/g, '');
 
-			console.log(targetPathspec);
-			let renaming = this.get('metaData').move(o.path, targetPathspec);
+			console.log(targetPath);
+			let renaming = this.get('metaData').move(o.path, targetPath);
 			renaming
 			.then(() => {
 				this.modelFor(this.routeName).files.removeObject(o);
-				this.examineAfterCreation(targetPathspec);
+				this.examineAfterCreation(targetPath);
 			})
 			.catch(() => {
-				this.get('notify').error(`"${o.path}" cannot be renamed to "${targetPathspec}"`);
+				this.get('notify').error(`"${o.path}" cannot be renamed to "${targetPath}"`);
 			})
 			.finally(() => {
 				Ember.set(o, 'ui_renaming', false);
@@ -161,7 +161,7 @@ export default Ember.Route.extend({
 			this.transitionTo('admin.files.examine', path);
 		},
 
-		// action that list a new tree
+		// action that list a new folder
 		list(path) {
 		        path = path.replace(/^\/|\/$/g, '');
 			this.transitionTo('admin.files.list-nohome', path);
@@ -261,7 +261,7 @@ export default Ember.Route.extend({
 	getUploadPromise(file) {
 		let basename = file.name;
 		let data = file;
-		let path = this.modelFor(this.routeName).currentPathspec;
+		let path = this.modelFor(this.routeName).currentFile;
 		path = path.replace(/^\/|\/$/g, '');
 		path = path + "/" + basename;
 		path = path.replace(/^\/|\/$/g, '');
@@ -278,7 +278,7 @@ export default Ember.Route.extend({
 		let file = files.item(indexes.shift());
 
 		let basename = file.name;
-		let path = this.modelFor(this.routeName).currentPathspec;
+		let path = this.modelFor(this.routeName).currentFile;
 		path = path.replace(/^\/|\/$/g, '');
 		path = path + "/" + basename;
 		path = path.replace(/^\/|\/$/g, '');

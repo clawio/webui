@@ -1,36 +1,35 @@
-import Ember from 'ember';
+import Ember from "ember";
 
 export function mime(params) {
-  const type = params[0];
-  const mime = params[1];
+  const isFolder = params[0];
+  const path = params[1];
 
-  if (type === 'tree') {
-  	return 'yellow folder open';
+  if (isFolder) {
+    return 'yellow folder open';
   } else {
-	if (!mime) {
-  		return 'cube';
-	}
-	if (mime === 'application/pdf') {
-		return 'blue file pdf outline';
-	}
-	if (mime === 'application/javascript') {
-		return 'blue code outline';
-	}
-	if (mime === 'application/xml') {
-		return 'blue file code outline';
-	}
-	if (mime.indexOf('image') > -1) {
-		return 'blue camera retro';
-	}
-	if (mime.indexOf('html') > -1) {
-		return 'blue html5';
-	}
-	if (mime.indexOf('css') > -1) {
-		return 'blue css3';
-	}
-
-	// TODO(labkode) fallback to extension
-  	return 'cube';
+    let ext = path.substring(path.lastIndexOf('.') + 1);
+    if (!ext) {
+      return 'cube';
+    }
+    if (ext === 'pdf') {
+      return 'blue file pdf outline';
+    }
+    if (ext === 'js') {
+      return 'blue code outline';
+    }
+    if (ext === 'xml') {
+      return 'blue file code outline';
+    }
+    if (ext === 'png' || ext === "jpeg" || ext === "gif") {
+      return 'blue camera retro';
+    }
+    if (ext === "html") {
+      return 'blue html5';
+    }
+    if (ext === "css") {
+      return 'blue css3';
+    }
+    return 'cube';
   }
 }
 

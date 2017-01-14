@@ -23,7 +23,7 @@ export default Ember.Component.extend({
 				})
 				.then(() => {
 					// try to create user home directory				
-					self.get('metaData').createHomeTree()
+					self.get('metaData').createHomeFolder()
 					.catch(() => {
 						let error = "Cannot create your home directory";
 						this.set('error', error);

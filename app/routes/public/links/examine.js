@@ -10,7 +10,7 @@ export default Ember.Route.extend({
 	},
 
 	afterModel(model) {
-		if (model.oinfo.type === 'blob') {
+		if (model.oinfo.type === 'file') {
       let secret = this.get('link').getLinkCredentials(this.get('params').token);
       let downloadUrl = this.get('link').getDownloadUrl(this.get('params').token, secret, "");
 		  Ember.set(model, 'downloadUrl', downloadUrl);

@@ -4,7 +4,7 @@ import ENV from "webui/config/environment";
 export default Ember.Service.extend({
   session: Ember.inject.service('session'),
 
-  createHomeTree() {
+  createHomeFolder() {
     let self = this;
     return new Ember.RSVP.Promise(function (resolve, reject) {
       self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
@@ -23,8 +23,7 @@ export default Ember.Service.extend({
     });
   },
 
-  createTree(path) {
-    path = encodeURIComponent(path);
+  createFolder(path) {
     let self = this;
     return new Ember.RSVP.Promise(function (resolve, reject) {
       self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
@@ -49,8 +48,6 @@ export default Ember.Service.extend({
     // clean path. Remove first and last slashes.
     fromPath = fromPath.replace(/^\/|\/$/g, '');
     targetPath = targetPath.replace(/^\/|\/$/g, '');
-    fromPath = encodeURIComponent(fromPath);
-    targetPath = encodeURIComponent(targetPath);
 
     let self = this;
     return new Ember.RSVP.Promise(function (resolve, reject) {
@@ -81,7 +78,6 @@ export default Ember.Service.extend({
     }
     // clean path. Remove first and last slashes.
     path = path.replace(/^\/|\/$/g, '');
-    path = encodeURIComponent(path);
 
     let self = this;
     return new Ember.RSVP.Promise(function (resolve, reject) {
@@ -110,7 +106,6 @@ export default Ember.Service.extend({
     }
     // clean path. Remove first and last slashes.
     path = path.replace(/^\/|\/$/g, '');
-    path = encodeURIComponent(path);
 
     let self = this;
     return new Ember.RSVP.Promise(function (resolve, reject) {

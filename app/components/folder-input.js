@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-	treeName: "",
+	folderName: "",
 	loading: false,
 
 	actions: {
@@ -9,9 +9,9 @@ export default Ember.Component.extend({
 			this.sendAction('hide');	
 		},
 		create() {
-			let treeName = this.get('treeName');
-			if (event.keyCode === 13 && treeName)  { // enter key
-				this.sendAction('create', treeName);
+			let folderName = this.get('folderName');
+			if (event.keyCode === 13 && folderName)  { // enter key
+				this.sendAction('create', folderName);
 			} else if (event.keyCode === 27) { // escape key
 				this.sendAction('hide');
 			}
