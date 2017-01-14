@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'webui',
     environment: environment,
     baseURL: '/',
-    locationType: 'auto',
+    locationType: 'hash',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -42,24 +42,22 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
 	  ENV['apis'] = {
-		authBaseUrl: "/api/v1/authentication/",
-		metaDataBaseUrl: "/api/v1/metadata/",
-		dataBaseUrl: "/api/v1/data/",
-		linkBaseUrl: "/api/v1/link/"
+		authBaseUrl: "http://localhost:1500/auth/",
+		metaDataBaseUrl: "http://localhost:1502/meta/",
+		dataBaseUrl: "http://localhost:1501/data/",
 	  };
   } else {
-	  ENV['apis'] = {
-		authBaseUrl: "http://localhost:1502/api/v1/authentication/",
-		metaDataBaseUrl: "http://localhost:1502/api/v1/metadata/",
-		dataBaseUrl: "http://localhost:1502/api/v1/data/",
-		linkBaseUrl: "http://localhost:1502/api/v1/link/"
-	  };
+    ENV['apis'] = {
+      authBaseUrl: "http://localhost:1500/auth/",
+      metaDataBaseUrl: "http://localhost:1502/meta/",
+      dataBaseUrl: "http://localhost:1501/data/",
+    };
   }
 
   ENV['ember-simple-auth'] = {
       authorizer: 'authorizer:token',
-      routeAfterAuthentication: 'admin.objects.list-home',
-      routeIfAlreadyAuthenticated: 'admin.objects.list-home'
+      routeAfterAuthentication: 'admin.files.list-home',
+      routeIfAlreadyAuthenticated: 'admin.files.list-home'
   };
   ENV['ember-simple-auth-token'] = {
 	  serverTokenEndpoint: ENV['apis'].authBaseUrl+'token',

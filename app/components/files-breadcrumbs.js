@@ -2,9 +2,9 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
 	actions: {
-		list(pathspec) {
-			console.log(pathspec);
-			this.sendAction('list', pathspec);	
+		list(path) {
+			console.log(path);
+			this.sendAction('list', path);	
 		}
 	}
 });

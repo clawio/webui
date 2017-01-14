@@ -13,8 +13,8 @@ export default Ember.Component.extend({
 			label: 'ratio',
 			text: {
 				ratio: '',
-				active: 'Uploading {value} out of {total} objects ({percent}%)',
-				success: '{total} objects uploaded',
+				active: 'Uploading {value} out of {total} files ({percent}%)',
+				success: '{total} files uploaded',
 			},
 			total: this.get('total'),
 			value: this.get('value'),

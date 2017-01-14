@@ -4,7 +4,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 	helpers: Ember.inject.service('helpers'),
 
-	objects: [],
+	files: [],
 	viewObjects: [],
 	filterterm: "",
 
@@ -29,7 +29,7 @@ export default Ember.Component.extend({
 				let o = this.get('viewObjects').findBy('ui_rename_input_visible', true);
 
 				// trigger rename only if new name is different from old name 
-				if (this.get('helpers').basename(o.pathspec) !== newObjectName) {
+				if (this.get('helpers').basename(o.path) !== newObjectName) {
 					this.sendAction('renameObject', o, newObjectName);
 				}
 				this.hideRenameInput();
@@ -57,26 +57,26 @@ export default Ember.Component.extend({
 			this.sendAction('upload', files);	
 		},
 
-		examine(pathspec) {
-			this.sendAction('examine', pathspec);		
+		examine(path) {
+			this.sendAction('examine', path);		
 		},
 
-		list(pathspec) {
-			this.sendAction('list', pathspec);
+		list(path) {
+			this.sendAction('list', path);
 		},
 
-		default(type, pathspec) {
+		default(type, path) {
 			if (!this.get('batchMode')) {
 				if (type === 'tree' ) {
-					this.sendAction('list', pathspec);
+					this.sendAction('list', path);
 				} else {
-					this.sendAction('download', pathspec);
+					this.sendAction('download', path);
 				}
 			}
 		},
 
-		delete(pathspec) {
-			this.sendAction('delete', pathspec);
+		delete(path) {
+			this.sendAction('delete', path);
 		},
 
 		filter() {
@@ -88,27 +88,27 @@ export default Ember.Component.extend({
 			this.clearSelection();
 		},
 
-		toggleSelectObject(object) {
-			let o = this.viewObjects.findBy('pathspec', object.pathspec);
+		toggleSelectObject(file) {
+			let o = this.viewObjects.findBy('path', file.path);
 			Ember.set(o, 'ui_selected', !o.ui_selected);
 		},
 
 		toggleAll() {
 			this.set('selectedAll', this.get('selectedAll'));
-			this.objects.forEach((o) => {
+			this.files.forEach((o) => {
 				Ember.set(o, 'ui_selected', !o.ui_selected);
 			});	
 		},
 
 		deleteSelected() {
 			this.get('viewObjects').filterBy('ui_selected', true).forEach((o) => {
-				this.sendAction('delete', o.pathspec);
+				this.sendAction('delete', o.path);
 				this.clearSelection();
 			});		
 		},
 
 		toggleRename(o) {
-			this.set('newObjectName', this.get('helpers').basename(o.pathspec));
+			this.set('newObjectName', this.get('helpers').basename(o.path));
 			Ember.set(o, 'ui_rename_input_visible', !o.ui_rename_input_visible);
 		},
 
@@ -126,15 +126,15 @@ export default Ember.Component.extend({
 	},
 	
 	initializeViewObjects: function() {
-		this.set('viewObjects', this.get('objects'));
+		this.set('viewObjects', this.get('files'));
 	}.on('init'),
 	
-	objectsChanged: function() {
-		// recompute filter view. This is needed because when adding new objects they are added to the current
+	filesChanged: function() {
+		// recompute filter view. This is needed because when adding new files they are added to the current
 		// view but maybe they do not meet the filter criteria. Also, they are not being added in the correct
 		// order specified by the column order criteria.
 		this.filterObjects();
-	}.observes('objects.[]'),
+	}.observes('files.[]'),
 
 	filtertermChanged: function() {
 		this.filterObjects();
@@ -171,11 +171,11 @@ export default Ember.Component.extend({
 	filterObjects() {
 		let filterterm = this.get('filterterm');
 		if (!filterterm) {
-			this.set('viewObjects', this.get('objects'));	
+			this.set('viewObjects', this.get('files'));	
 		} else {
 			filterterm = filterterm.toLowerCase();
-			let filtered = this.get('objects').filter((o) => {
-				return o.pathspec.toLowerCase().indexOf(filterterm) > -1;
+			let filtered = this.get('files').filter((o) => {
+				return o.path.toLowerCase().indexOf(filterterm) > -1;
 			});
 			this.set('viewObjects', filtered);
 		}
@@ -203,7 +203,7 @@ export default Ember.Component.extend({
 
 		// trigger focus event
 		if (this.get('creatingObject')) {
-			this.$(".new-object-input :input").focus();
+			this.$(".new-file-input :input").focus();
 		}
 		// trigger focus event
 		if (this.get('creatingTree')) {
@@ -216,7 +216,7 @@ export default Ember.Component.extend({
 
 		// add modTime popup to all elements
 		this.get('viewObjects').forEach((o) => {
-			let popup = Ember.$(`[data-clawio-pathspec='${o.pathspec}'] .clawio-modtime  small`);
+			let popup = Ember.$(`[data-clawio-path='${o.path}'] .clawio-modtime  small`);
 			popup.popup();	
 		});
 	},

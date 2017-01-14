@@ -27,11 +27,11 @@ export default Ember.Route.extend({
 			});
 		},
 
-		default(type, pathspec) {
+		default(type, path) {
 			if (type === 'tree' ) {
-				this.transitionTo('admin.objects.list-nohome', pathspec);
+				this.transitionTo('admin.files.list-nohome', path);
 			} else {
-				const downloadUrl = this.get('data').download(pathspec);	
+				const downloadUrl = this.get('data').download(path);	
 				window.open(downloadUrl);
 			}
 		},

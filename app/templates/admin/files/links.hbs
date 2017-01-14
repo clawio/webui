@@ -25,10 +25,10 @@
 	{{#each model as |link|}}
 	    <tr class="{{if link.ui_unlinking "disabled error"}}">
 	      <td>
-		<i {{action "default" link.oinfo.type link.oinfo.pathspec}} class="ui link large {{mime link.oinfo.type link.oinfo.mime_type}} icon">
+		<i {{action "default" link.oinfo.type link.oinfo.path}} class="ui link large {{mime link.oinfo.type link.oinfo.mime_type}} icon">
 		</i>
 	      </td>
-	      <td {{action "default" link.oinfo.type link.oinfo.pathspec}} class="left aligned"><a href="">{{link.oinfo.pathspec}}</a></td>
+	      <td {{action "default" link.oinfo.type link.oinfo.path}} class="left aligned"><a href="">{{link.oinfo.path}}</a></td>
 	      <td class="left aligned">{{#link-to "public.links.info" link.token target="_blank"}}<i class="ui icon external"></i>{{/link-to}}</td>
 	      <td class="right aligned"><i class="ui icon large {{if link.protected 'green lock' 'red unlock'}}"></i></td>
 	      <td class="right aligned"><small>{{date-string link.expires}}</small></td>

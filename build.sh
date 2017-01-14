@@ -1,3 +1,6 @@
+mkdir -p dist
+npm install
+bower install
 ember build --env production
 cp LICENSE dist/
 cd dist

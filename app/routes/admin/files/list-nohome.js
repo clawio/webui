@@ -7,7 +7,7 @@ export default ObjectsListHomeRoute.extend({
 	actions: {
 		error() {
 			this.get('notify').error("tree not found");
-			this.transitionTo('admin.objects.list-home');	
+			this.transitionTo('admin.files.list-home');	
 		}
 	}
 });

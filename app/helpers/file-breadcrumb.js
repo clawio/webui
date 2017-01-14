@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export function objectBreadcrumb(params) {
+export function fileBreadcrumb(params) {
 	var current = params[0] || "/";
 	var parts = current.split('/');
 	parts.shift();
@@ -18,4 +18,4 @@ export function objectBreadcrumb(params) {
 	return breadcrumbCollection;
 }
 
-export default Ember.Helper.helper(objectBreadcrumb);
+export default Ember.Helper.helper(fileBreadcrumb);

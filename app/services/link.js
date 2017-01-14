@@ -37,16 +37,16 @@ export default Ember.Service.extend({
     });
   },
 
-  ls(token, pathspec) {
-    pathspec = pathspec.replace(/^\/|\/$/g, '');
-    pathspec = encodeURIComponent(pathspec);
+  ls(token, path) {
+    path = path.replace(/^\/|\/$/g, '');
+    path = encodeURIComponent(path);
 
     let params = {};
     params['secret'] = this.getLinkCredentials(token);
     const query = Ember.$.param(params);
     return new Ember.RSVP.Promise(function (resolve, reject) {
       Ember.$.ajax({
-        url: ENV.apis.linkBaseUrl + "ls/" + token + "/" + pathspec + "?" + query,
+        url: ENV.apis.linkBaseUrl + "ls/" + token + "/" + path + "?" + query,
         type: "GET",
         dataType: "json"
       }).done(function (response) {
@@ -97,7 +97,7 @@ export default Ember.Service.extend({
   create(o, password, expires) {
     let data = {password: password, expires: expires};
     console.log(data);
-    let pathspec = encodeURIComponent(o.pathspec);
+    let path = encodeURIComponent(o.path);
     let self = this;
     return new Ember.RSVP.Promise(function (resolve, reject) {
       self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
@@ -105,7 +105,7 @@ export default Ember.Service.extend({
         headers[headerName] = headerValue;
         Ember.$.ajax({
           headers: headers,
-          url: ENV.apis.linkBaseUrl + "create/" + pathspec,
+          url: ENV.apis.linkBaseUrl + "create/" + path,
           type: "POST",
           data: JSON.stringify(data),
           contentType: 'application/json; charset=utf-8',
@@ -120,7 +120,7 @@ export default Ember.Service.extend({
   },
 
   find(o) {
-    let pathspec = encodeURIComponent(o.pathspec);
+    let path = encodeURIComponent(o.path);
     let self = this;
     return new Ember.RSVP.Promise(function (resolve, reject) {
       self.get('session').authorize('authorizer:oauth2', (headerName, headerValue) => {
@@ -128,7 +128,7 @@ export default Ember.Service.extend({
         headers[headerName] = headerValue;
         Ember.$.ajax({
           headers: headers,
-          url: ENV.apis.linkBaseUrl + "find/" + pathspec,
+          url: ENV.apis.linkBaseUrl + "find/" + path,
           type: "GET",
           dataType: "json"
         }).done(function (response) {

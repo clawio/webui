@@ -5,6 +5,6 @@ export default Ember.Route.extend({
 	data: Ember.inject.service('data'),
 
 	model(params) {
-		return this.get('metaData').examine(params.pathspec);
+		return this.get('metaData').examine(params.path);
 	},
 });

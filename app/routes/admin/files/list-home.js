@@ -8,11 +8,11 @@ export default Ember.Route.extend({
 
 	model(params) {
 		return Ember.RSVP.hash({
-			currentPathspec: params.pathspec || "",
+			currentPathspec: params.path || "",
 
-			objects: this.get('metaData').list(params.pathspec) || [],
+			files: this.get('metaData').list(params.path) || [],
 
-			breadcrumbs: this.get('pathspecToBreadcrumbs')(params.pathspec),
+			breadcrumbs: this.get('pathToBreadcrumbs')(params.path),
 
 			uploadTotal: 0,
 			uploadValue: 0,
@@ -33,13 +33,13 @@ export default Ember.Route.extend({
 			shareSidebarLoading: false
 		});
 	},
-	
+
 	renderTemplate() {
 		this.render();
-		this.render('admin/objects/list/sidebar-links',{
+		this.render('admin/files/list/sidebar-links',{
 			outlet: 'sidebar-links',
 		})
-		this.render('admin/objects/list/sidebar-content', {
+		this.render('admin/files/list/sidebar-content', {
 			outlet: 'sidebar-content',
 		})
 	},
@@ -62,16 +62,16 @@ export default Ember.Route.extend({
 			let model = this.modelFor(this.routeName);
 			Ember.set(model, 'blobInputLoading',true);
 
-			let pathspec = model.currentPathspec + "/" + blobName;
-			pathspec = pathspec.replace(/^\/|\/$/g, '');
+			let path = model.currentPathspec + "/" + blobName;
+			path = path.replace(/^\/|\/$/g, '');
 
-			let uploadPromise = this.get('data').upload(pathspec, new Uint8Array(0));
+			let uploadPromise = this.get('data').upload(path, new Uint8Array(0));
 			uploadPromise
 			.then(() => {
-				this.examineAfterCreation(pathspec);
+				this.examineAfterCreation(path);
 			})
 			.catch(() => {
-				this.get('notify').error(`"${pathspec}" cannot be created`);
+				this.get('notify').error(`"${path}" cannot be created`);
 			})
 			.finally(() => {
 				Ember.set(model, 'blobInputLoading', false);
@@ -92,16 +92,16 @@ export default Ember.Route.extend({
 			let model = this.modelFor(this.routeName);
 			Ember.set(model, 'treeInputLoading',true);
 
-			let pathspec = model.currentPathspec + "/" + treeName;
-			pathspec = pathspec.replace(/^\/|\/$/g, '');
+			let path = model.currentPathspec + "/" + treeName;
+			path = path.replace(/^\/|\/$/g, '');
 
-			let uploadPromise = this.get('metaData').createTree(pathspec);
+			let uploadPromise = this.get('metaData').createTree(path);
 			uploadPromise
 			.then(() => {
-				this.examineAfterCreation(pathspec);
+				this.examineAfterCreation(path);
 			})
 			.catch(() => {
-				this.get('notify').error(`"${pathspec}" cannot be created`);
+				this.get('notify').error(`"${path}" cannot be created`);
 			})
 			.finally(() => {
 				Ember.set(model, 'treeInputLoading', false);
@@ -122,71 +122,71 @@ export default Ember.Route.extend({
 			// showUploadBar()
 			this.initUploadBar(numberOfFiles, files.item(0));
 
-			let indexes = [];	
+			let indexes = [];
 			for(let i = 0; i < files.length; i++) {
 				indexes.push(i);
 			}
 			this.handleUpload(files, indexes);
 		},
-	
-		// actions that handle the  renaming of objects
-		renameObject(object, newName) {
-			let o = this.modelFor(this.routeName).objects.findBy("pathspec", object.pathspec);
+
+		// actions that handle the  renaming of files
+		renameObject(file, newName) {
+			let o = this.modelFor(this.routeName).files.findBy("path", file.path);
 			Ember.set(o, 'ui_renaming', true);
-			
-			let targetPathspec = object.pathspec.split("/");
-			// remove last part to obtain dirname	
+
+			let targetPathspec = file.path.split("/");
+			// remove last part to obtain dirname
 			targetPathspec.pop();
 			targetPathspec.push(newName);
 			targetPathspec = targetPathspec.join('/').replace(/^\/|\/$/g, '');
 
 			console.log(targetPathspec);
-			let renaming = this.get('metaData').move(o.pathspec, targetPathspec);
+			let renaming = this.get('metaData').move(o.path, targetPathspec);
 			renaming
 			.then(() => {
-				this.modelFor(this.routeName).objects.removeObject(o);
+				this.modelFor(this.routeName).files.removeObject(o);
 				this.examineAfterCreation(targetPathspec);
 			})
 			.catch(() => {
-				this.get('notify').error(`"${o.pathspec}" cannot be renamed to "${targetPathspec}"`);
+				this.get('notify').error(`"${o.path}" cannot be renamed to "${targetPathspec}"`);
 			})
 			.finally(() => {
 				Ember.set(o, 'ui_renaming', false);
 			});
 		},
 
-		// action that shows information about a particular object
-		examine(pathspec) {
-		        pathspec = pathspec.replace(/^\/|\/$/g, '');
-			this.transitionTo('admin.objects.examine', pathspec);	
+		// action that shows information about a particular file
+		examine(path) {
+		        path = path.replace(/^\/|\/$/g, '');
+			this.transitionTo('admin.files.examine', path);
 		},
-		
+
 		// action that list a new tree
-		list(pathspec) {
-		        pathspec = pathspec.replace(/^\/|\/$/g, '');
-			this.transitionTo('admin.objects.list-nohome', pathspec);
+		list(path) {
+		        path = path.replace(/^\/|\/$/g, '');
+			this.transitionTo('admin.files.list-nohome', path);
 		},
 
-		// action that deletes an object
-		delete(pathspec) {
-			let object = this.modelFor(this.routeName).objects.findBy("pathspec", pathspec);
-			Ember.set(object, 'ui_deleting', true);
+		// action that deletes an file
+		delete(path) {
+			let file = this.modelFor(this.routeName).files.findBy("path", path);
+			Ember.set(file, 'ui_deleting', true);
 
-			let deleting = this.get('metaData').delete(pathspec);
+			let deleting = this.get('metaData').delete(path);
 			deleting
 			.then(() => {
-				this.modelFor(this.routeName).objects.removeObject(object);
-				this.get('notify').info(`"${pathspec}" deleted`);
+				this.modelFor(this.routeName).files.removeObject(file);
+				this.get('notify').info(`"${path}" deleted`);
 			})
 			.catch(() => {
-				Ember.set(object, 'ui_deleting', false);
-				this.get('notify').error(`"${pathspec}" cannot be deleted`);
+				Ember.set(file, 'ui_deleting', false);
+				this.get('notify').error(`"${path}" cannot be deleted`);
 			});
 		},
-		
-		// action that downloads an object
-		download(pathspec) {
-			const downloadUrl = this.get('data').download(pathspec);	
+
+		// action that downloads an file
+		download(path) {
+			const downloadUrl = this.get('data').download(path);
 			window.open(downloadUrl);
 		},
 
@@ -198,7 +198,7 @@ export default Ember.Route.extend({
 			this.get('link').find(o)
 			.then((link) => {
 				Ember.set(model,'shareLink', link);
-			})	
+			})
 			.catch(() => {
 				Ember.set(model,'shareLink', null);
 			})
@@ -212,7 +212,7 @@ export default Ember.Route.extend({
 			this.get('link').create(o, password, epoch)
 			.then((link) => {
 				Ember.set(model,'shareLink', link);
-			})		
+			})
 			.finally(() => {
 				Ember.set(model,'shareComponentLoading', false);
 			})
@@ -261,11 +261,11 @@ export default Ember.Route.extend({
 	getUploadPromise(file) {
 		let basename = file.name;
 		let data = file;
-		let pathspec = this.modelFor(this.routeName).currentPathspec;
-		pathspec = pathspec.replace(/^\/|\/$/g, '');
-		pathspec = pathspec + "/" + basename;
-		pathspec = pathspec.replace(/^\/|\/$/g, '');
-		return this.get('data').upload(pathspec, data, Ember.$.proxy(this.progressHandler, this));
+		let path = this.modelFor(this.routeName).currentPathspec;
+		path = path.replace(/^\/|\/$/g, '');
+		path = path + "/" + basename;
+		path = path.replace(/^\/|\/$/g, '');
+		return this.get('data').upload(path, data, Ember.$.proxy(this.progressHandler, this));
 	},
 	handleUpload(files, indexes) {
 		if(indexes.length === 0) {
@@ -278,18 +278,18 @@ export default Ember.Route.extend({
 		let file = files.item(indexes.shift());
 
 		let basename = file.name;
-		let pathspec = this.modelFor(this.routeName).currentPathspec;
-		pathspec = pathspec.replace(/^\/|\/$/g, '');
-		pathspec = pathspec + "/" + basename;
-		pathspec = pathspec.replace(/^\/|\/$/g, '');
+		let path = this.modelFor(this.routeName).currentPathspec;
+		path = path.replace(/^\/|\/$/g, '');
+		path = path + "/" + basename;
+		path = path.replace(/^\/|\/$/g, '');
 
 		let uploadPromise = this.getUploadPromise(file);
 		uploadPromise
 		.then(() => {
-			this.examineAfterCreation(pathspec);
+			this.examineAfterCreation(path);
 		})
 		.catch(() => {
-			this.get('notify').error(`"${pathspec}" cannot be uploaded`);
+			this.get('notify').error(`"${path}" cannot be uploaded`);
 		})
 		.finally(() => {
 			this.incrementUploadBar(file);
@@ -297,33 +297,33 @@ export default Ember.Route.extend({
 		});
 	},
 
-	examineAfterCreation(pathspec) {
-		let examining = this.get('metaData').examine(pathspec);
+	examineAfterCreation(path) {
+		let examining = this.get('metaData').examine(path);
 		examining
-		.then((object) => {
-			let old = this.modelFor(this.routeName).objects.findBy("pathspec", pathspec);
+		.then((file) => {
+			let old = this.modelFor(this.routeName).files.findBy("path", path);
 			if (old) {
-				this.modelFor(this.routeName).objects.removeObject(old);
+				this.modelFor(this.routeName).files.removeObject(old);
 			}
 
-			Ember.set(object, 'ui_highlight', true);
-			this.modelFor(this.routeName).objects.addObject(object);
+			Ember.set(file, 'ui_highlight', true);
+			this.modelFor(this.routeName).files.addObject(file);
 
 			Ember.run.later(() => {
-				Ember.set(object, 'ui_highlight', false);
+				Ember.set(file, 'ui_highlight', false);
 			}, 500);
 		})
 		.catch(() => {
-			this.get('notify').error(`"${pathspec}" cannot be examined`);
+			this.get('notify').error(`"${path}" cannot be examined`);
 		});
 	},
 
-	pathspecToBreadcrumbs(pathspec) {
-		if (!pathspec) {
+	pathToBreadcrumbs(path) {
+		if (!path) {
 			return [];
 		}
-		pathspec = pathspec.replace(/^\/|\/$/g, '');
-		var current = pathspec;
+		path = path.replace(/^\/|\/$/g, '');
+		var current = path;
 		var parts = current.split('/');
 		var previousPath = "";
 		var breadcrumbCollection = [];
@@ -331,7 +331,7 @@ export default Ember.Route.extend({
 			var newPath = previousPath + '/' + parts[i];
 			var name = parts[i];
 			breadcrumbCollection.push({
-				pathspec: newPath,
+				path: newPath,
 				name: name
 			});
 			previousPath = newPath;
