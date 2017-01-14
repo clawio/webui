@@ -11,6 +11,9 @@ export function mime(params) {
     if (!ext) {
       return 'cube';
     }
+    if (ext === 'txt') {
+      return 'blue file txt outline';
+    }
     if (ext === 'pdf') {
       return 'blue file pdf outline';
     }
