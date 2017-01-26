@@ -2,8 +2,7 @@ import Ember from 'ember';
 
 export function humanDate(params/*, hash*/) {
   // modified is in ns, we need ms
-  //let modified = params[0] / 1000000;
-  let modified = params[0] * 1000;
+  let modified = params[0] / 1000000;
   return new Date(modified);
 }
 

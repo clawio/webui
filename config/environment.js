@@ -1,5 +1,7 @@
 /* jshint node: true */
 
+var siteConfig = require('./site-config');
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'webui',
@@ -40,19 +42,11 @@ module.exports = function(environment) {
   }
 
 
-  if (environment === 'production') {
-	  ENV['apis'] = {
-		authBaseUrl: "http://localhost:1500/auth/",
-		metaDataBaseUrl: "http://localhost:1502/meta/",
-		dataBaseUrl: "http://localhost:1501/data/",
-	  };
-  } else {
-    ENV['apis'] = {
-      authBaseUrl: "http://localhost:1500/auth/",
-      metaDataBaseUrl: "http://localhost:1502/meta/",
-      dataBaseUrl: "http://localhost:1501/data/",
-    };
-  }
+   ENV['apis'] = {
+       authBaseUrl: siteConfig.authBaseUrl,
+       metaDataBaseUrl: siteConfig.metaDataBaseUrl,
+       dataBaseUrl: siteConfig.dataBaseUrl,
+   };
 
   ENV['ember-simple-auth'] = {
       authorizer: 'authorizer:token',
